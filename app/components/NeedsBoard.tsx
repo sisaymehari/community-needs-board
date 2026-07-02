@@ -1,110 +1,64 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import type { Need } from '@/lib/types'
+import NeedCard from '@/app/components/NeedCard'
 
-const CATEGORY_ICONS: Record<string, string> = {
-  volunteers: '🙋',
-  food: '🍎',
-  clothing: '👕',
-  equipment: '🔧',
-  skills: '💡',
-}
+const CATEGORIES = ['all', 'volunteers', 'food', 'clothing', 'equipment', 'skills']
 
 export default function NeedsBoard({ initialNeeds }: { initialNeeds: Need[] }) {
   const [needs, setNeeds] = useState(initialNeeds)
-  const [fulfillingId, setFulfillingId] = useState<string | null>(null)
+  const [activeCategory, setActiveCategory] = useState('all')
 
-  const handleFulfill = async (id: string) => {
-    setFulfillingId(id)
-    const { error } = await supabase
-      .from('needs')
-      .update({ is_fulfilled: true })
-      .eq('id', id)
-
-    if (!error) {
-      setNeeds(prev => prev.filter(need => need.id !== id))
-    }
-    setFulfillingId(null)
+  const handleFulfilled = (id: string) => {
+    setNeeds(prev => prev.filter(need => need.id !== id))
   }
 
-  if (needs.length === 0) {
-    return <p style={{ color: '#9ca3af' }}>No needs posted yet. Be the first to post one.</p>
-  }
+  const filteredNeeds = activeCategory === 'all'
+    ? needs
+    : needs.filter(need => need.category === activeCategory)
+
+  const filters = (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.5rem' }}>
+      {CATEGORIES.map(category => {
+        const isActive = category === activeCategory
+        return (
+          <button
+            key={category}
+            onClick={() => setActiveCategory(category)}
+            style={{
+              fontSize: '13px',
+              fontWeight: '500',
+              padding: '0.4rem 0.9rem',
+              borderRadius: '100px',
+              border: 'none',
+              cursor: 'pointer',
+              textTransform: 'capitalize',
+              background: isActive ? '#1D6A48' : '#f3f4f6',
+              color: isActive ? '#fff' : '#6b7280',
+            }}
+          >
+            {category}
+          </button>
+        )
+      })}
+    </div>
+  )
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      {needs.map((need) => (
-        <div
-          key={need.id}
-          style={{
-            border: '1px solid #e5e7eb',
-            borderRadius: '10px',
-            padding: '1.25rem 1.5rem',
-            borderLeft: need.is_urgent ? '4px solid #ef4444' : '4px solid #1D6A48',
-            background: '#fff',
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.2rem' }}>
-                {CATEGORY_ICONS[need.category] || '📌'}
-              </span>
-              <span style={{
-                fontSize: '12px',
-                fontWeight: '500',
-                background: '#f3f4f6',
-                padding: '2px 10px',
-                borderRadius: '100px',
-                textTransform: 'capitalize',
-              }}>
-                {need.category}
-              </span>
-              {need.is_urgent && (
-                <span style={{
-                  fontSize: '12px',
-                  fontWeight: '600',
-                  background: '#fef2f2',
-                  color: '#ef4444',
-                  padding: '2px 10px',
-                  borderRadius: '100px',
-                }}>
-                  Urgent
-                </span>
-              )}
-            </div>
-            <span style={{ fontSize: '12px', color: '#9ca3af' }}>
-              {new Date(need.created_at).toLocaleDateString('en-GB')}
-            </span>
-          </div>
-
-          <p style={{ fontSize: '15px', color: '#111827', marginBottom: '0.75rem', lineHeight: '1.6' }}>
-            {need.description}
-          </p>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ fontSize: '13px', color: '#6b7280' }}>
-              {need.organisations?.name} · {need.organisations?.location}
-            </div>
-            <button
-              onClick={() => handleFulfill(need.id)}
-              disabled={fulfillingId === need.id}
-              style={{
-                fontSize: '12px',
-                color: '#9ca3af',
-                background: 'none',
-                border: '1px solid #e5e7eb',
-                borderRadius: '6px',
-                padding: '3px 8px',
-                cursor: fulfillingId === need.id ? 'not-allowed' : 'pointer',
-              }}
-            >
-              {fulfillingId === need.id ? 'Updating...' : 'Mark as fulfilled'}
-            </button>
-          </div>
+    <>
+      {filters}
+      {needs.length === 0 ? (
+        <p style={{ color: '#9ca3af' }}>No needs posted yet. Be the first to post one.</p>
+      ) : filteredNeeds.length === 0 ? (
+        <p style={{ color: '#9ca3af' }}>No needs in this category right now.</p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {filteredNeeds.map((need) => (
+            <NeedCard key={need.id} need={need} onFulfilled={handleFulfilled} />
+          ))}
         </div>
-      ))}
-    </div>
+      )}
+    </>
   )
 }
