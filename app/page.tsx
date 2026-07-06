@@ -2,6 +2,8 @@ import { supabase } from '@/lib/supabase'
 import type { Need } from '@/lib/types'
 import NeedsBoard from '@/app/components/NeedsBoard'
 
+export const dynamic = 'force-dynamic'
+
 export default async function HomePage() {
   const { data: needs } = await supabase
     .from('needs')
