@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Community Needs Board
 
-## Getting Started
+A free, open-source platform where local charities and community organisations post what they need — volunteers, food, equipment, skills — and anyone in the community can see it and offer to help directly.
 
-First, run the development server:
+No sign-up required to browse. No middlemen. Just a simple, public board.
+
+**Live demo:** [community-needs-board.netlify.app](https://community-needs-board.netlify.app)
+
+---
+
+## How it works
+
+1. A charity visits the site and posts a need — what they need, what category it falls into, and whether it's urgent.
+2. Anyone can browse the board and see what's needed nearby.
+3. If you can help, you click "Offer to Help" on a need and leave your name, email, and a message. The charity gets that directly.
+4. Once a need is met, it's marked as fulfilled and disappears from the board.
+
+---
+
+## Tech stack
+
+- [Next.js](https://nextjs.org) (App Router, TypeScript)
+- [Supabase](https://supabase.com) — Postgres database + auth
+- Deployed on [Netlify](https://netlify.com)
+
+---
+
+## Running locally
+
+**1. Clone the repo**
+
+```bash
+git clone https://github.com/sisaymehari/community-needs-board.git
+cd community-needs-board
+```
+
+**2. Install dependencies**
+
+```bash
+npm install
+```
+
+**3. Set up environment variables**
+
+Create a `.env.local` file in the root of the project:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+You can find these in your Supabase project under **Settings → API**.
+
+**4. Start the dev server**
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Background
 
-## Learn More
+This project is part of a broader vision called **Community OS** — a set of simple, open tools built to help local communities and the organisations that serve them work better together.
 
-To learn more about Next.js, take a look at the following resources:
+The goal isn't to build another platform. It's to solve real, specific problems that charities and community groups face every day, starting with visibility: who needs what, and how can people help.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome. If you have an idea, spot a bug, or want to adapt this for your own community, open an issue or a pull request.
