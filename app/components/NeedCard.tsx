@@ -116,7 +116,13 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ fontSize: '13px', color: '#6b7280' }}>
-          {need.organisations?.name} · {need.organisations?.location}
+          <a
+            href={`/org/${need.organisation_id}`}
+            style={{ color: '#1D6A48', textDecoration: 'none', fontWeight: '500' }}
+          >
+            {need.organisations?.name}
+          </a>
+          {need.organisations?.location && ` · ${need.organisations.location}`}
         </div>
         <div style={{ display: 'flex', gap: '6px' }}>
           {!submitted && (
