@@ -17,8 +17,12 @@ export default async function HomePage() {
         <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
           Community Needs Board
         </h1>
-        <p style={{ color: '#6b7280', fontSize: '1rem' }}>
-          Local charities posting what they need. Browse and offer to help.
+        <p style={{ color: '#6b7280', fontSize: '1rem', lineHeight: '1.7', marginBottom: '0.4rem' }}>
+          Local charities and community organisations post what they need — volunteers, food, equipment, skills — and anyone can see it and offer to help directly.
+          No middlemen, no sign-up required.
+        </p>
+        <p style={{ color: '#9ca3af', fontSize: '0.9rem' }}>
+          Free and open source. Built for Enfield, open to anyone.
         </p>
         <a
           href="/post"
