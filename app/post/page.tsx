@@ -5,11 +5,42 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 const CATEGORIES = ['volunteers', 'food', 'clothing', 'equipment', 'skills']
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+const baseInputStyle = {
+  width: '100%',
+  padding: '0.6rem 0.8rem',
+  borderRadius: '6px',
+  fontSize: '15px',
+  outline: 'none',
+  fontFamily: 'sans-serif',
+  boxSizing: 'border-box' as const,
+}
+
+const labelStyle = {
+  display: 'block',
+  fontSize: '14px',
+  fontWeight: '500' as const,
+  marginBottom: '0.4rem',
+  color: '#374151',
+}
+
+const fieldErrorStyle = {
+  fontSize: '13px',
+  color: '#ef4444',
+  marginTop: '0.3rem',
+  margin: '0.3rem 0 0',
+}
+
+function inputStyle(hasError: boolean) {
+  return { ...baseInputStyle, border: `1px solid ${hasError ? '#ef4444' : '#e5e7eb'}` }
+}
 
 export default function PostNeedPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [submitError, setSubmitError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [form, setForm] = useState({
     org_name: '',
     org_location: '',
@@ -19,40 +50,60 @@ export default function PostNeedPage() {
     is_urgent: false,
   })
 
-  const handleChange = (e: any) => {
-    const { name, value, type, checked } = e.target
-    setForm(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }))
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target
+    const checked = (e.target as HTMLInputElement).checked
+    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: '' }))
+    }
   }
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+  const validate = (): Record<string, string> => {
+    const errors: Record<string, string> = {}
+    if (!form.org_name.trim())
+      errors.org_name = 'Organisation name is required.'
+    if (!form.org_location.trim())
+      errors.org_location = 'Location is required.'
+    if (!form.org_email.trim())
+      errors.org_email = 'Contact email is required.'
+    else if (!EMAIL_RE.test(form.org_email.trim()))
+      errors.org_email = 'Please enter a valid email address.'
+    if (!form.description.trim())
+      errors.description = 'Please describe what you need.'
+    return errors
+  }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitError('')
+
+    const errors = validate()
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors)
+      return
+    }
+
+    setLoading(true)
     try {
-      // First create or find the organisation
       const { data: org, error: orgError } = await supabase
         .from('organisations')
         .insert({
-          name: form.org_name,
-          location: form.org_location,
-          email: form.org_email,
+          name: form.org_name.trim(),
+          location: form.org_location.trim(),
+          email: form.org_email.trim(),
         })
         .select()
         .single()
 
       if (orgError) throw orgError
 
-      // Then create the need linked to that org
       const { error: needError } = await supabase
         .from('needs')
         .insert({
           organisation_id: org.id,
           category: form.category,
-          description: form.description,
+          description: form.description.trim(),
           is_urgent: form.is_urgent,
         })
 
@@ -60,28 +111,10 @@ export default function PostNeedPage() {
 
       router.push('/')
     } catch (err: any) {
-      setError(err.message || 'Something went wrong. Please try again.')
+      setSubmitError(err.message || 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }
-  }
-
-  const inputStyle = {
-    width: '100%',
-    padding: '0.6rem 0.8rem',
-    border: '1px solid #e5e7eb',
-    borderRadius: '6px',
-    fontSize: '15px',
-    outline: 'none',
-    fontFamily: 'sans-serif',
-  }
-
-  const labelStyle = {
-    display: 'block',
-    fontSize: '14px',
-    fontWeight: '500',
-    marginBottom: '0.4rem',
-    color: '#374151'
   }
 
   return (
@@ -97,60 +130,60 @@ export default function PostNeedPage() {
         Tell the community what your organisation needs right now.
       </p>
 
-      {error && (
+      {submitError && (
         <div style={{
           background: '#fef2f2', color: '#ef4444',
           padding: '0.75rem 1rem', borderRadius: '6px',
-          marginBottom: '1.5rem', fontSize: '14px'
+          marginBottom: '1.5rem', fontSize: '14px',
         }}>
-          {error}
+          {submitError}
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
           <div>
             <label style={labelStyle}>Organisation name *</label>
             <input
-              style={inputStyle}
+              style={inputStyle(!!fieldErrors.org_name)}
               name="org_name"
               value={form.org_name}
               onChange={handleChange}
               placeholder="e.g. Enfield Food Bank"
-              required
             />
+            {fieldErrors.org_name && <p style={fieldErrorStyle}>{fieldErrors.org_name}</p>}
           </div>
 
           <div>
             <label style={labelStyle}>Location *</label>
             <input
-              style={inputStyle}
+              style={inputStyle(!!fieldErrors.org_location)}
               name="org_location"
               value={form.org_location}
               onChange={handleChange}
               placeholder="e.g. Enfield, North London"
-              required
             />
+            {fieldErrors.org_location && <p style={fieldErrorStyle}>{fieldErrors.org_location}</p>}
           </div>
 
           <div>
             <label style={labelStyle}>Contact email *</label>
             <input
-              style={inputStyle}
+              style={inputStyle(!!fieldErrors.org_email)}
               type="email"
               name="org_email"
               value={form.org_email}
               onChange={handleChange}
               placeholder="e.g. hello@enfieldfoodbank.org"
-              required
             />
+            {fieldErrors.org_email && <p style={fieldErrorStyle}>{fieldErrors.org_email}</p>}
           </div>
 
           <div>
             <label style={labelStyle}>Category *</label>
             <select
-              style={inputStyle}
+              style={inputStyle(false)}
               name="category"
               value={form.category}
               onChange={handleChange}
@@ -166,13 +199,13 @@ export default function PostNeedPage() {
           <div>
             <label style={labelStyle}>What do you need? *</label>
             <textarea
-              style={{ ...inputStyle, minHeight: '120px', resize: 'vertical' }}
+              style={{ ...inputStyle(!!fieldErrors.description), minHeight: '120px', resize: 'vertical' }}
               name="description"
               value={form.description}
               onChange={handleChange}
               placeholder="e.g. We need 3 volunteers this Saturday 10am–2pm to help sort food donations at our warehouse."
-              required
             />
+            {fieldErrors.description && <p style={fieldErrorStyle}>{fieldErrors.description}</p>}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -201,9 +234,13 @@ export default function PostNeedPage() {
               fontSize: '15px',
               fontWeight: '500',
               cursor: loading ? 'not-allowed' : 'pointer',
-              width: '100%'
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
+            {loading && <span className="spinner-white" />}
             {loading ? 'Posting...' : 'Post Need'}
           </button>
 

@@ -24,3 +24,33 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-white {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btn-spin 0.65s linear infinite;
+  margin-right: 7px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.spinner-grey {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid #e5e7eb;
+  border-top-color: #9ca3af;
+  border-radius: 50%;
+  animation: btn-spin 0.65s linear infinite;
+  margin-right: 5px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}

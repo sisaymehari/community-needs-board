@@ -12,6 +12,8 @@ const CATEGORY_ICONS: Record<string, string> = {
   skills: '💡',
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 const inputStyle = {
   width: '100%',
   padding: '0.5rem 0.7rem',
@@ -22,21 +24,33 @@ const inputStyle = {
   fontFamily: 'sans-serif',
 }
 
+const fieldErrorStyle = {
+  fontSize: '12px',
+  color: '#ef4444',
+  margin: '0.25rem 0 0',
+}
+
 export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfilled: (id: string) => void }) {
   const [fulfilling, setFulfilling] = useState(false)
+  const [fulfillError, setFulfillError] = useState('')
   const [showOfferForm, setShowOfferForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [offerError, setOfferError] = useState('')
+  const [offerFieldErrors, setOfferFieldErrors] = useState<{ name?: string; email?: string }>({})
   const [offer, setOffer] = useState({ name: '', email: '', message: '' })
 
   const handleFulfill = async () => {
     setFulfilling(true)
+    setFulfillError('')
     const { error } = await supabase
       .from('needs')
       .update({ is_fulfilled: true })
       .eq('id', need.id)
 
-    if (!error) {
+    if (error) {
+      setFulfillError('Something went wrong. Please try again.')
+    } else {
       onFulfilled(need.id)
     }
     setFulfilling(false)
@@ -45,22 +59,42 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
   const handleOfferChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setOffer(prev => ({ ...prev, [name]: value }))
+    if (offerFieldErrors[name as keyof typeof offerFieldErrors]) {
+      setOfferFieldErrors(prev => ({ ...prev, [name]: '' }))
+    }
+  }
+
+  const validateOffer = () => {
+    const errors: { name?: string; email?: string } = {}
+    if (!offer.name.trim()) errors.name = 'Your name is required.'
+    if (!offer.email.trim()) errors.email = 'Your email is required.'
+    else if (!EMAIL_RE.test(offer.email.trim())) errors.email = 'Please enter a valid email address.'
+    return errors
   }
 
   const handleOfferSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitting(true)
+    setOfferError('')
 
+    const errors = validateOffer()
+    if (Object.keys(errors).length > 0) {
+      setOfferFieldErrors(errors)
+      return
+    }
+
+    setSubmitting(true)
     const { error } = await supabase
       .from('offers')
       .insert({
         need_id: need.id,
-        name: offer.name,
-        email: offer.email,
-        message: offer.message || null,
+        name: offer.name.trim(),
+        email: offer.email.trim(),
+        message: offer.message.trim() || null,
       })
 
-    if (!error) {
+    if (error) {
+      setOfferError('Something went wrong. Please try again.')
+    } else {
       setSubmitted(true)
       setShowOfferForm(false)
     }
@@ -114,7 +148,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
         {need.description}
       </p>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
         <div style={{ fontSize: '13px', color: '#6b7280' }}>
           <a
             href={`/org/${need.organisation_id}`}
@@ -124,7 +158,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
           </a>
           {need.organisations?.location && ` · ${need.organisations.location}`}
         </div>
-        <div style={{ display: 'flex', gap: '6px' }}>
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
           {!submitted && (
             <button
               onClick={() => setShowOfferForm(prev => !prev)}
@@ -152,12 +186,21 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
               borderRadius: '6px',
               padding: '3px 8px',
               cursor: fulfilling ? 'not-allowed' : 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
             }}
           >
-            {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
+            {fulfilling && <span className="spinner-grey" />}
+            {fulfilling ? 'Saving...' : 'Mark as fulfilled'}
           </button>
         </div>
       </div>
+
+      {fulfillError && (
+        <p style={{ fontSize: '12px', color: '#ef4444', marginTop: '0.4rem' }}>
+          {fulfillError}
+        </p>
+      )}
 
       {submitted && (
         <p style={{ fontSize: '13px', color: '#1D6A48', marginTop: '0.75rem', fontWeight: '500' }}>
@@ -168,6 +211,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
       {showOfferForm && (
         <form
           onSubmit={handleOfferSubmit}
+          noValidate
           style={{
             marginTop: '1rem',
             paddingTop: '1rem',
@@ -177,23 +221,35 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
             gap: '0.6rem',
           }}
         >
-          <input
-            style={inputStyle}
-            name="name"
-            value={offer.name}
-            onChange={handleOfferChange}
-            placeholder="Your name"
-            required
-          />
-          <input
-            style={inputStyle}
-            type="email"
-            name="email"
-            value={offer.email}
-            onChange={handleOfferChange}
-            placeholder="Your email"
-            required
-          />
+          <div>
+            <input
+              style={{
+                ...inputStyle,
+                border: `1px solid ${offerFieldErrors.name ? '#ef4444' : '#e5e7eb'}`,
+              }}
+              name="name"
+              value={offer.name}
+              onChange={handleOfferChange}
+              placeholder="Your name"
+            />
+            {offerFieldErrors.name && <p style={fieldErrorStyle}>{offerFieldErrors.name}</p>}
+          </div>
+
+          <div>
+            <input
+              style={{
+                ...inputStyle,
+                border: `1px solid ${offerFieldErrors.email ? '#ef4444' : '#e5e7eb'}`,
+              }}
+              type="email"
+              name="email"
+              value={offer.email}
+              onChange={handleOfferChange}
+              placeholder="Your email"
+            />
+            {offerFieldErrors.email && <p style={fieldErrorStyle}>{offerFieldErrors.email}</p>}
+          </div>
+
           <textarea
             style={{ ...inputStyle, minHeight: '60px', resize: 'vertical' }}
             name="message"
@@ -201,6 +257,11 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
             onChange={handleOfferChange}
             placeholder="Message (optional)"
           />
+
+          {offerError && (
+            <p style={{ fontSize: '12px', color: '#ef4444', margin: 0 }}>{offerError}</p>
+          )}
+
           <button
             type="submit"
             disabled={submitting}
@@ -214,8 +275,11 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
               fontSize: '13px',
               fontWeight: '500',
               cursor: submitting ? 'not-allowed' : 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
             }}
           >
+            {submitting && <span className="spinner-white" />}
             {submitting ? 'Sending...' : 'Send Offer'}
           </button>
         </form>
