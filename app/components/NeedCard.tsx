@@ -72,6 +72,35 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
     return errors
   }
 
+  const notifyOrganisation = async (
+    helperName: string,
+    helperEmail: string,
+    helperMessage: string | null,
+  ) => {
+    try {
+      const { data: orgData } = await supabase
+        .from('organisations')
+        .select('name, email')
+        .eq('id', need.organisation_id)
+        .single()
+
+      if (!orgData?.email) return
+
+      await supabase.functions.invoke('send-offer-notification', {
+        body: {
+          orgEmail: orgData.email,
+          orgName: orgData.name,
+          needDescription: need.description,
+          helperName,
+          helperEmail,
+          helperMessage,
+        },
+      })
+    } catch {
+      // Notification failure is silent — the offer is already saved
+    }
+  }
+
   const handleOfferSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setOfferError('')
@@ -82,14 +111,18 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
       return
     }
 
+    const helperName = offer.name.trim()
+    const helperEmail = offer.email.trim()
+    const helperMessage = offer.message.trim() || null
+
     setSubmitting(true)
     const { error } = await supabase
       .from('offers')
       .insert({
         need_id: need.id,
-        name: offer.name.trim(),
-        email: offer.email.trim(),
-        message: offer.message.trim() || null,
+        name: helperName,
+        email: helperEmail,
+        message: helperMessage,
       })
 
     if (error) {
@@ -97,6 +130,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
     } else {
       setSubmitted(true)
       setShowOfferForm(false)
+      notifyOrganisation(helperName, helperEmail, helperMessage)
     }
     setSubmitting(false)
   }
