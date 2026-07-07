@@ -197,7 +197,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
       </div>
 
       {fulfillError && (
-        <p style={{ fontSize: '12px', color: '#ef4444', marginTop: '0.4rem' }}>
+        <p role="alert" style={{ fontSize: '12px', color: '#ef4444', marginTop: '0.4rem' }}>
           {fulfillError}
         </p>
       )}
@@ -231,8 +231,13 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
               value={offer.name}
               onChange={handleOfferChange}
               placeholder="Your name"
+              aria-label="Your name"
+              aria-invalid={offerFieldErrors.name ? true : undefined}
+              aria-describedby={offerFieldErrors.name ? `${need.id}-name-error` : undefined}
             />
-            {offerFieldErrors.name && <p style={fieldErrorStyle}>{offerFieldErrors.name}</p>}
+            {offerFieldErrors.name && (
+              <p id={`${need.id}-name-error`} role="alert" style={fieldErrorStyle}>{offerFieldErrors.name}</p>
+            )}
           </div>
 
           <div>
@@ -246,8 +251,13 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
               value={offer.email}
               onChange={handleOfferChange}
               placeholder="Your email"
+              aria-label="Your email"
+              aria-invalid={offerFieldErrors.email ? true : undefined}
+              aria-describedby={offerFieldErrors.email ? `${need.id}-email-error` : undefined}
             />
-            {offerFieldErrors.email && <p style={fieldErrorStyle}>{offerFieldErrors.email}</p>}
+            {offerFieldErrors.email && (
+              <p id={`${need.id}-email-error`} role="alert" style={fieldErrorStyle}>{offerFieldErrors.email}</p>
+            )}
           </div>
 
           <textarea
@@ -256,10 +266,11 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
             value={offer.message}
             onChange={handleOfferChange}
             placeholder="Message (optional)"
+            aria-label="Message (optional)"
           />
 
           {offerError && (
-            <p style={{ fontSize: '12px', color: '#ef4444', margin: 0 }}>{offerError}</p>
+            <p role="alert" style={{ fontSize: '12px', color: '#ef4444', margin: 0 }}>{offerError}</p>
           )}
 
           <button

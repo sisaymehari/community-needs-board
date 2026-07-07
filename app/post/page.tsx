@@ -131,11 +131,14 @@ export default function PostNeedPage() {
       </p>
 
       {submitError && (
-        <div style={{
-          background: '#fef2f2', color: '#ef4444',
-          padding: '0.75rem 1rem', borderRadius: '6px',
-          marginBottom: '1.5rem', fontSize: '14px',
-        }}>
+        <div
+          role="alert"
+          style={{
+            background: '#fef2f2', color: '#ef4444',
+            padding: '0.75rem 1rem', borderRadius: '6px',
+            marginBottom: '1.5rem', fontSize: '14px',
+          }}
+        >
           {submitError}
         </div>
       )}
@@ -144,45 +147,61 @@ export default function PostNeedPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
           <div>
-            <label style={labelStyle}>Organisation name *</label>
+            <label htmlFor="org_name" style={labelStyle}>Organisation name *</label>
             <input
+              id="org_name"
               style={inputStyle(!!fieldErrors.org_name)}
               name="org_name"
               value={form.org_name}
               onChange={handleChange}
               placeholder="e.g. Enfield Food Bank"
+              aria-invalid={fieldErrors.org_name ? true : undefined}
+              aria-describedby={fieldErrors.org_name ? 'org_name-error' : undefined}
             />
-            {fieldErrors.org_name && <p style={fieldErrorStyle}>{fieldErrors.org_name}</p>}
+            {fieldErrors.org_name && (
+              <p id="org_name-error" role="alert" style={fieldErrorStyle}>{fieldErrors.org_name}</p>
+            )}
           </div>
 
           <div>
-            <label style={labelStyle}>Location *</label>
+            <label htmlFor="org_location" style={labelStyle}>Location *</label>
             <input
+              id="org_location"
               style={inputStyle(!!fieldErrors.org_location)}
               name="org_location"
               value={form.org_location}
               onChange={handleChange}
               placeholder="e.g. Enfield, North London"
+              aria-invalid={fieldErrors.org_location ? true : undefined}
+              aria-describedby={fieldErrors.org_location ? 'org_location-error' : undefined}
             />
-            {fieldErrors.org_location && <p style={fieldErrorStyle}>{fieldErrors.org_location}</p>}
+            {fieldErrors.org_location && (
+              <p id="org_location-error" role="alert" style={fieldErrorStyle}>{fieldErrors.org_location}</p>
+            )}
           </div>
 
           <div>
-            <label style={labelStyle}>Contact email *</label>
+            <label htmlFor="org_email" style={labelStyle}>Contact email *</label>
             <input
+              id="org_email"
               style={inputStyle(!!fieldErrors.org_email)}
               type="email"
               name="org_email"
               value={form.org_email}
               onChange={handleChange}
               placeholder="e.g. hello@enfieldfoodbank.org"
+              aria-invalid={fieldErrors.org_email ? true : undefined}
+              aria-describedby={fieldErrors.org_email ? 'org_email-error' : undefined}
             />
-            {fieldErrors.org_email && <p style={fieldErrorStyle}>{fieldErrors.org_email}</p>}
+            {fieldErrors.org_email && (
+              <p id="org_email-error" role="alert" style={fieldErrorStyle}>{fieldErrors.org_email}</p>
+            )}
           </div>
 
           <div>
-            <label style={labelStyle}>Category *</label>
+            <label htmlFor="category" style={labelStyle}>Category *</label>
             <select
+              id="category"
               style={inputStyle(false)}
               name="category"
               value={form.category}
@@ -197,15 +216,20 @@ export default function PostNeedPage() {
           </div>
 
           <div>
-            <label style={labelStyle}>What do you need? *</label>
+            <label htmlFor="description" style={labelStyle}>What do you need? *</label>
             <textarea
+              id="description"
               style={{ ...inputStyle(!!fieldErrors.description), minHeight: '120px', resize: 'vertical' }}
               name="description"
               value={form.description}
               onChange={handleChange}
               placeholder="e.g. We need 3 volunteers this Saturday 10am–2pm to help sort food donations at our warehouse."
+              aria-invalid={fieldErrors.description ? true : undefined}
+              aria-describedby={fieldErrors.description ? 'description-error' : undefined}
             />
-            {fieldErrors.description && <p style={fieldErrorStyle}>{fieldErrors.description}</p>}
+            {fieldErrors.description && (
+              <p id="description-error" role="alert" style={fieldErrorStyle}>{fieldErrors.description}</p>
+            )}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
