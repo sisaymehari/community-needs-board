@@ -12,7 +12,7 @@ export default async function HomePage() {
     .order('created_at', { ascending: false })
 
   return (
-    <main style={{ fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto', padding: '2rem', background: '#fff', minHeight: '100vh' }}>
+    <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto', background: '#fff', minHeight: '100vh' }}>
       <div style={{ marginBottom: '2.5rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
           Community Needs Board
@@ -26,6 +26,7 @@ export default async function HomePage() {
         </p>
         <a
           href="/post"
+          className="hero-cta"
           style={{
             display: 'inline-block',
             marginTop: '1rem',

@@ -25,7 +25,7 @@ export default async function OrgPage({
 
   if (!org) {
     return (
-      <main style={{ fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
+      <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto' }}>
         <a href="/" style={{ fontSize: '14px', color: '#6b7280', textDecoration: 'none' }}>
           ← Back to board
         </a>
@@ -39,7 +39,7 @@ export default async function OrgPage({
   const organisation = org as Organisation
 
   return (
-    <main style={{ fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto', padding: '2rem', background: '#fff', minHeight: '100vh' }}>
+    <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto', background: '#fff', minHeight: '100vh' }}>
       <a href="/" style={{ fontSize: '14px', color: '#6b7280', textDecoration: 'none' }}>
         ← Back to board
       </a>

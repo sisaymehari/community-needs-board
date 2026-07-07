@@ -162,6 +162,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
           {!submitted && (
             <button
               onClick={() => setShowOfferForm(prev => !prev)}
+              className="card-action-btn"
               style={{
                 fontSize: '12px',
                 color: '#9ca3af',
@@ -178,6 +179,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
           <button
             onClick={handleFulfill}
             disabled={fulfilling}
+            className="card-action-btn"
             style={{
               fontSize: '12px',
               color: '#9ca3af',

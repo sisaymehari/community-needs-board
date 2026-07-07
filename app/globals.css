@@ -25,6 +25,44 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* ---- Layout ---- */
+.page-wrap {
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  /* min-width:0 overrides the flex-item default of min-width:auto.
+     Without it, a flex item cannot shrink below its content's intrinsic
+     width, so the h1 at 2rem pushes <main> to ~440px even at 375px viewport. */
+  min-width: 0;
+}
+
+/* ---- Mobile responsive ---- */
+@media (max-width: 640px) {
+  .page-wrap {
+    padding: 1.25rem 1rem;
+  }
+
+  /* Filter chips: match 44px touch target */
+  .filter-btn {
+    min-height: 44px;
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+  }
+
+  /* Card ghost action buttons: match 44px touch target */
+  .card-action-btn {
+    min-height: 44px;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 13px !important;
+  }
+
+  /* Hero CTA: 44px touch target */
+  .hero-cta {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+}
+
 @keyframes btn-spin {
   to { transform: rotate(360deg); }
 }

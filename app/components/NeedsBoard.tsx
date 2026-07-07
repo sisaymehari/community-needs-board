@@ -26,6 +26,7 @@ export default function NeedsBoard({ initialNeeds }: { initialNeeds: Need[] }) {
           <button
             key={category}
             onClick={() => setActiveCategory(category)}
+            className="filter-btn"
             style={{
               fontSize: '13px',
               fontWeight: '500',

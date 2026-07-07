@@ -118,7 +118,7 @@ export default function PostNeedPage() {
   }
 
   return (
-    <main style={{ fontFamily: 'sans-serif', maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
+    <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '600px', margin: '0 auto' }}>
       <a href="/" style={{ fontSize: '14px', color: '#6b7280', textDecoration: 'none' }}>
         ← Back to board
       </a>
