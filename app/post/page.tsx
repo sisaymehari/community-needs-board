@@ -57,11 +57,15 @@ export default function PostNeedPage() {
         return
       }
 
-      const { data: orgData } = await supabase
+      console.log('[post] session.user.id =', session.user.id)
+
+      const { data: orgData, error: orgError } = await supabase
         .from('organisations')
         .select('id, name')
         .eq('owner_id', session.user.id)
         .single()
+
+      console.log('[post] org query result — data:', orgData, '| error:', orgError)
 
       setOrg(orgData ?? null)
       setLoading(false)

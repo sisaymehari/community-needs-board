@@ -84,25 +84,20 @@ export default function SignupPage() {
       if (authError) throw authError
       if (!authData.user) throw new Error('Sign up failed — please try again.')
 
-      console.log('[signup] authData:', JSON.stringify(authData, null, 2))
-
-      const insertPayload = {
-        name: form.org_name.trim(),
-        location: form.org_location.trim(),
-        email: form.email.trim(),
-        owner_id: authData.user.id,
+      const res = await fetch('/api/create-org', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: authData.user.id,
+          name: form.org_name.trim(),
+          location: form.org_location.trim(),
+          email: form.email.trim(),
+        }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? 'Failed to create organisation — please try again.')
       }
-      console.log('[signup] inserting org with payload:', JSON.stringify(insertPayload, null, 2))
-
-      const { data: orgData, error: orgError } = await supabase
-        .from('organisations')
-        .insert(insertPayload)
-        .select('id, owner_id')
-        .single()
-
-      console.log('[signup] insert result — data:', orgData, '| error:', orgError)
-
-      if (orgError) throw orgError
 
       if (authData.session) {
         // Email confirmation disabled in Supabase — logged in immediately
