@@ -1,35 +1,35 @@
 @import "tailwindcss";
 
+/* ── Design tokens ──────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-bg:           #FBFAF7;
+  --color-ink:          #1A1D1B;
+  --color-sage:         #6B7862;
+  --color-green:        #1D6A48;
+  --color-green-hover:  #155238;
+  --color-green-light:  #E8F2EC;
+  --color-marigold:     #E8871E;
+  --color-marigold-bg:  #FEF3E8;
+  --color-border:       #E5E1D8;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── Base ───────────────────────────────────────────────────────── */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
 }
 
-/* ---- Layout ---- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────── */
 .nav-inner {
   max-width: 800px;
   margin: 0 auto;
-  padding: 0.75rem 2rem;
+  padding: 0 2rem;
+  height: 56px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,46 +38,140 @@ body {
 }
 
 .page-wrap {
-  padding: 2rem;
+  padding: 2.5rem 2rem;
   width: 100%;
   box-sizing: border-box;
-  /* min-width:0 overrides the flex-item default of min-width:auto.
-     Without it, a flex item cannot shrink below its content's intrinsic
-     width, so the h1 at 2rem pushes <main> to ~440px even at 375px viewport. */
   min-width: 0;
 }
 
-/* ---- Mobile responsive ---- */
+/* ── Filter pills ───────────────────────────────────────────────── */
+.filter-pill {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 0.4rem 0.9rem;
+  min-height: 34px;
+  border-radius: 100px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-sage);
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  letter-spacing: 0.01em;
+}
+.filter-pill:hover {
+  background: var(--color-green-light);
+  color: var(--color-green);
+  border-color: var(--color-green-light);
+}
+.filter-pill--active {
+  background: var(--color-green);
+  color: #fff;
+  border-color: var(--color-green);
+}
+.filter-pill--active:hover {
+  background: var(--color-green-hover);
+  border-color: var(--color-green-hover);
+  color: #fff;
+}
+
+/* ── Primary button ─────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--color-green);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0.72rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-green-hover);
+}
+.btn-primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ── Card ghost action buttons ──────────────────────────────────── */
+.card-action-btn {
+  font-size: 12px;
+  color: var(--color-sage);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  transition: border-color 0.12s, color 0.12s;
+  display: inline-flex;
+  align-items: center;
+}
+.card-action-btn:hover {
+  border-color: var(--color-sage);
+  color: var(--color-ink);
+}
+
+/* ── Form inputs ────────────────────────────────────────────────── */
+.form-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  font-size: 15px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  background: #fff;
+  color: var(--color-ink);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.12s;
+}
+.form-input:focus {
+  border-color: var(--color-green);
+}
+.form-input--error {
+  border-color: #e05252;
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .nav-inner {
-    padding: 0.75rem 1rem;
+    padding: 0 1rem;
+    height: 52px;
   }
 
   .page-wrap {
-    padding: 1.25rem 1rem;
+    padding: 1.5rem 1rem;
   }
 
-  /* Filter chips: match 44px touch target */
-  .filter-btn {
-    min-height: 44px;
-    padding-top: 0.6rem !important;
-    padding-bottom: 0.6rem !important;
+  .filter-pill {
+    min-height: 40px;
+    padding: 0.5rem 0.85rem;
   }
 
-  /* Card ghost action buttons: match 44px touch target */
   .card-action-btn {
-    min-height: 44px;
-    padding: 0.5rem 0.75rem !important;
-    font-size: 13px !important;
+    min-height: 40px;
+    padding: 0.45rem 0.75rem;
   }
 
-  /* Hero CTA: 44px touch target */
   .hero-cta {
     padding-top: 0.75rem !important;
     padding-bottom: 0.75rem !important;
   }
 }
 
+/* ── Spinners ───────────────────────────────────────────────────── */
 @keyframes btn-spin {
   to { transform: rotate(360deg); }
 }
@@ -90,8 +184,6 @@ body {
   border-top-color: #fff;
   border-radius: 50%;
   animation: btn-spin 0.65s linear infinite;
-  margin-right: 7px;
-  vertical-align: middle;
   flex-shrink: 0;
 }
 
@@ -99,11 +191,9 @@ body {
   display: inline-block;
   width: 9px;
   height: 9px;
-  border: 1.5px solid #e5e7eb;
-  border-top-color: #9ca3af;
+  border: 1.5px solid var(--color-border);
+  border-top-color: var(--color-sage);
   border-radius: 50%;
   animation: btn-spin 0.65s linear infinite;
-  margin-right: 5px;
-  vertical-align: middle;
   flex-shrink: 0;
 }

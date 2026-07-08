@@ -4,32 +4,20 @@ import { Suspense, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-const baseInputStyle = {
-  width: '100%',
-  padding: '0.6rem 0.8rem',
-  borderRadius: '6px',
-  fontSize: '15px',
-  outline: 'none',
-  fontFamily: 'sans-serif',
-  boxSizing: 'border-box' as const,
-}
-
-const labelStyle = {
+const labelStyle: React.CSSProperties = {
   display: 'block',
-  fontSize: '14px',
-  fontWeight: '500' as const,
+  fontSize: '13.5px',
+  fontWeight: '500',
   marginBottom: '0.4rem',
-  color: '#374151',
+  color: 'var(--color-ink)',
+  fontFamily: 'var(--font-inter), system-ui, sans-serif',
 }
 
-const fieldErrorStyle = {
-  fontSize: '13px',
-  color: '#ef4444',
+const fieldErrorStyle: React.CSSProperties = {
+  fontSize: '12.5px',
+  color: '#e05252',
   margin: '0.3rem 0 0',
-}
-
-function inputStyle(hasError: boolean) {
-  return { ...baseInputStyle, border: `1px solid ${hasError ? '#ef4444' : '#e5e7eb'}` }
+  fontFamily: 'var(--font-inter), system-ui, sans-serif',
 }
 
 function LoginForm() {
@@ -87,20 +75,31 @@ function LoginForm() {
   }
 
   return (
-    <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '480px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.6rem', fontWeight: '700', margin: '1.5rem 0 0.25rem' }}>
+    <main className="page-wrap" style={{ maxWidth: '420px', margin: '0 auto' }}>
+      <h1 style={{
+        fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+        fontSize: '1.75rem',
+        fontWeight: '700',
+        letterSpacing: '-0.02em',
+        color: 'var(--color-ink)',
+        margin: '1.5rem 0 0.35rem',
+      }}>
         Log in
       </h1>
-      <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '2rem' }}>
+      <p style={{ color: 'var(--color-sage)', fontSize: '14px', marginBottom: '2rem', fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
         Log in to manage your organisation&apos;s needs.
       </p>
 
       {redirectMessage && (
         <div style={{
-          background: '#fffbeb', color: '#92400e',
-          padding: '0.75rem 1rem', borderRadius: '6px',
-          marginBottom: '1.5rem', fontSize: '14px',
-          border: '1px solid #fde68a',
+          background: 'var(--color-marigold-bg)',
+          color: 'var(--color-marigold)',
+          padding: '0.75rem 1rem',
+          borderRadius: '7px',
+          marginBottom: '1.5rem',
+          fontSize: '14px',
+          border: '1px solid #f5cfa0',
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
         }}>
           {redirectMessage}
         </div>
@@ -108,9 +107,14 @@ function LoginForm() {
 
       {submitError && (
         <div role="alert" style={{
-          background: '#fef2f2', color: '#b91c1c',
-          padding: '0.75rem 1rem', borderRadius: '6px',
-          marginBottom: '1.5rem', fontSize: '14px',
+          background: '#fef2f2',
+          color: '#c0392b',
+          padding: '0.75rem 1rem',
+          borderRadius: '7px',
+          marginBottom: '1.5rem',
+          fontSize: '14px',
+          border: '1px solid #fecaca',
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
         }}>
           {submitError}
         </div>
@@ -120,15 +124,15 @@ function LoginForm() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
           <div>
-            <label htmlFor="email" style={labelStyle}>Email *</label>
+            <label htmlFor="email" style={labelStyle}>Email</label>
             <input
               id="email"
               name="email"
               type="email"
-              style={inputStyle(!!fieldErrors.email)}
+              className={`form-input${fieldErrors.email ? ' form-input--error' : ''}`}
               value={form.email}
               onChange={handleChange}
-              placeholder="e.g. hello@enfieldfoodbank.org"
+              placeholder="hello@enfieldfoodbank.org"
               aria-invalid={fieldErrors.email ? true : undefined}
               aria-describedby={fieldErrors.email ? 'email-error' : undefined}
             />
@@ -138,12 +142,12 @@ function LoginForm() {
           </div>
 
           <div>
-            <label htmlFor="password" style={labelStyle}>Password *</label>
+            <label htmlFor="password" style={labelStyle}>Password</label>
             <input
               id="password"
               name="password"
               type="password"
-              style={inputStyle(!!fieldErrors.password)}
+              className={`form-input${fieldErrors.password ? ' form-input--error' : ''}`}
               value={form.password}
               onChange={handleChange}
               placeholder="Your password"
@@ -155,31 +159,14 @@ function LoginForm() {
             )}
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              background: loading ? '#9ca3af' : '#1D6A48',
-              color: '#fff',
-              padding: '0.75rem',
-              borderRadius: '6px',
-              border: 'none',
-              fontSize: '15px',
-              fontWeight: '500',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <button type="submit" disabled={loading} className="btn-primary">
             {loading && <span className="spinner-white" />}
-            {loading ? 'Logging in...' : 'Log in'}
+            {loading ? 'Logging in…' : 'Log in'}
           </button>
 
-          <p style={{ fontSize: '14px', color: '#6b7280', textAlign: 'center', margin: 0 }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-sage)', textAlign: 'center', margin: 0, fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
             Don&apos;t have an account?{' '}
-            <a href="/signup" style={{ color: '#1D6A48', textDecoration: 'none', fontWeight: '500' }}>
+            <a href="/signup" style={{ color: 'var(--color-green)', textDecoration: 'none', fontWeight: '500' }}>
               Sign up
             </a>
           </p>
@@ -190,7 +177,6 @@ function LoginForm() {
   )
 }
 
-// useSearchParams() requires a Suspense boundary in Next.js App Router
 export default function LoginPage() {
   return (
     <Suspense>

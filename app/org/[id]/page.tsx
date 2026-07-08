@@ -23,13 +23,22 @@ export default async function OrgPage({
       .order('created_at', { ascending: false }),
   ])
 
+  const backLink = (
+    <a href="/" style={{
+      fontSize: '13px',
+      color: 'var(--color-sage)',
+      textDecoration: 'none',
+      fontFamily: 'var(--font-inter), system-ui, sans-serif',
+    }}>
+      ← Back to board
+    </a>
+  )
+
   if (!org) {
     return (
-      <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto' }}>
-        <a href="/" style={{ fontSize: '14px', color: '#6b7280', textDecoration: 'none' }}>
-          ← Back to board
-        </a>
-        <p style={{ marginTop: '3rem', color: '#6b7280', fontSize: '15px' }}>
+      <main className="page-wrap" style={{ maxWidth: '800px', margin: '0 auto' }}>
+        {backLink}
+        <p style={{ marginTop: '3rem', color: 'var(--color-sage)', fontSize: '15px', fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
           Organisation not found.
         </p>
       </main>
@@ -39,40 +48,60 @@ export default async function OrgPage({
   const organisation = org as Organisation
 
   return (
-    <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto', background: '#fff', minHeight: '100vh' }}>
-      <a href="/" style={{ fontSize: '14px', color: '#6b7280', textDecoration: 'none' }}>
-        ← Back to board
-      </a>
+    <main className="page-wrap" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      {backLink}
 
       <div style={{
         marginTop: '1.5rem',
-        marginBottom: '2rem',
+        marginBottom: '2.5rem',
         padding: '1.5rem',
-        border: '1px solid #e5e7eb',
+        border: '1px solid var(--color-border)',
         borderRadius: '10px',
-        borderLeft: '4px solid #1D6A48',
+        borderLeft: '4px solid var(--color-green)',
         background: '#fff',
       }}>
-        <h1 style={{ fontSize: '1.6rem', fontWeight: '700', margin: '0 0 0.5rem' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+          fontSize: '1.5rem',
+          fontWeight: '700',
+          letterSpacing: '-0.015em',
+          color: 'var(--color-ink)',
+          margin: '0 0 0.6rem',
+        }}>
           {organisation.name}
         </h1>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', fontSize: '14px', color: '#6b7280' }}>
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          fontSize: '13px',
+          color: 'var(--color-sage)',
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
+        }}>
           <span>{organisation.location}</span>
           <a
             href={`mailto:${organisation.email}`}
-            style={{ color: '#1D6A48', textDecoration: 'none' }}
+            style={{ color: 'var(--color-green)', textDecoration: 'none' }}
           >
             {organisation.email}
           </a>
         </div>
       </div>
 
-      <h2 style={{ fontSize: '1rem', fontWeight: '600', color: '#374151', marginBottom: '1rem' }}>
+      <h2 style={{
+        fontFamily: 'var(--font-ibm-plex-mono), monospace',
+        fontSize: '11.5px',
+        fontWeight: '500',
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        color: 'var(--color-sage)',
+        marginBottom: '1.25rem',
+      }}>
         Open Needs
       </h2>
 
       {(needs ?? []).length === 0 ? (
-        <p style={{ color: '#9ca3af', fontSize: '14px' }}>
+        <p style={{ color: 'var(--color-sage)', fontSize: '14px', fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
           No open needs at the moment.
         </p>
       ) : (

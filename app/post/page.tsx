@@ -6,32 +6,20 @@ import { useRouter } from 'next/navigation'
 
 const CATEGORIES = ['volunteers', 'food', 'clothing', 'equipment', 'skills']
 
-const baseInputStyle = {
-  width: '100%',
-  padding: '0.6rem 0.8rem',
-  borderRadius: '6px',
-  fontSize: '15px',
-  outline: 'none',
-  fontFamily: 'sans-serif',
-  boxSizing: 'border-box' as const,
-}
-
-const labelStyle = {
+const labelStyle: React.CSSProperties = {
   display: 'block',
-  fontSize: '14px',
-  fontWeight: '500' as const,
+  fontSize: '13.5px',
+  fontWeight: '500',
   marginBottom: '0.4rem',
-  color: '#374151',
+  color: 'var(--color-ink)',
+  fontFamily: 'var(--font-inter), system-ui, sans-serif',
 }
 
-const fieldErrorStyle = {
-  fontSize: '13px',
-  color: '#ef4444',
+const fieldErrorStyle: React.CSSProperties = {
+  fontSize: '12.5px',
+  color: '#e05252',
   margin: '0.3rem 0 0',
-}
-
-function inputStyle(hasError: boolean) {
-  return { ...baseInputStyle, border: `1px solid ${hasError ? '#ef4444' : '#e5e7eb'}` }
+  fontFamily: 'var(--font-inter), system-ui, sans-serif',
 }
 
 type Org = { id: string; name: string }
@@ -111,7 +99,6 @@ export default function PostNeedPage() {
         })
 
       if (error) throw error
-
       router.push('/')
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
@@ -121,48 +108,64 @@ export default function PostNeedPage() {
     }
   }
 
-  // Show nothing while checking session (avoids flash before redirect)
   if (loading) return null
 
-  // Logged in but no org row found (shouldn't happen in normal flow)
   if (!org) {
     return (
-      <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '600px', margin: '0 auto' }}>
-        <p style={{ color: '#6b7280', fontSize: '14px', marginTop: '3rem' }}>
+      <main className="page-wrap" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <p style={{ color: 'var(--color-sage)', fontSize: '14px', marginTop: '3rem', fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
           No organisation found for your account. If this is unexpected, please{' '}
-          <a href="/signup" style={{ color: '#1D6A48' }}>sign up again</a> or contact support.
+          <a href="/signup" style={{ color: 'var(--color-green)' }}>sign up again</a> or contact support.
         </p>
       </main>
     )
   }
 
   return (
-    <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '600px', margin: '0 auto' }}>
-      <a href="/" style={{ fontSize: '14px', color: '#6b7280', textDecoration: 'none' }}>
+    <main className="page-wrap" style={{ maxWidth: '560px', margin: '0 auto' }}>
+      <a href="/" style={{
+        fontSize: '13px',
+        color: 'var(--color-sage)',
+        textDecoration: 'none',
+        fontFamily: 'var(--font-inter), system-ui, sans-serif',
+      }}>
         ← Back to board
       </a>
 
-      <h1 style={{ fontSize: '1.6rem', fontWeight: '700', margin: '1.5rem 0 0.25rem' }}>
+      <h1 style={{
+        fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+        fontSize: '1.75rem',
+        fontWeight: '700',
+        letterSpacing: '-0.02em',
+        color: 'var(--color-ink)',
+        margin: '1.5rem 0 0.4rem',
+      }}>
         Post a Need
       </h1>
 
       <div style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '6px',
+        gap: '5px',
         marginBottom: '2rem',
-        fontSize: '14px',
-        color: '#6b7280',
+        fontSize: '13px',
+        color: 'var(--color-sage)',
+        fontFamily: 'var(--font-inter), system-ui, sans-serif',
       }}>
         Posting as
-        <span style={{ fontWeight: '600', color: '#1D6A48' }}>{org.name}</span>
+        <span style={{ fontWeight: '600', color: 'var(--color-green)' }}>{org.name}</span>
       </div>
 
       {submitError && (
         <div role="alert" style={{
-          background: '#fef2f2', color: '#b91c1c',
-          padding: '0.75rem 1rem', borderRadius: '6px',
-          marginBottom: '1.5rem', fontSize: '14px',
+          background: '#fef2f2',
+          color: '#c0392b',
+          padding: '0.75rem 1rem',
+          borderRadius: '7px',
+          marginBottom: '1.5rem',
+          fontSize: '14px',
+          border: '1px solid #fecaca',
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
         }}>
           {submitError}
         </div>
@@ -172,11 +175,11 @@ export default function PostNeedPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
           <div>
-            <label htmlFor="category" style={labelStyle}>Category *</label>
+            <label htmlFor="category" style={labelStyle}>Category</label>
             <select
               id="category"
               name="category"
-              style={inputStyle(false)}
+              className="form-input"
               value={form.category}
               onChange={handleChange}
             >
@@ -189,11 +192,12 @@ export default function PostNeedPage() {
           </div>
 
           <div>
-            <label htmlFor="description" style={labelStyle}>What do you need? *</label>
+            <label htmlFor="description" style={labelStyle}>What do you need?</label>
             <textarea
               id="description"
               name="description"
-              style={{ ...inputStyle(!!fieldErrors.description), minHeight: '120px', resize: 'vertical' }}
+              className={`form-input${fieldErrors.description ? ' form-input--error' : ''}`}
+              style={{ minHeight: '120px', resize: 'vertical' }}
               value={form.description}
               onChange={handleChange}
               placeholder="e.g. We need 3 volunteers this Saturday 10am–2pm to help sort food donations at our warehouse."
@@ -205,40 +209,28 @@ export default function PostNeedPage() {
             )}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <label style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            color: 'var(--color-ink)',
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
+          }}>
             <input
               type="checkbox"
-              id="is_urgent"
               name="is_urgent"
               checked={form.is_urgent}
               onChange={handleChange}
-              style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+              style={{ width: '16px', height: '16px', accentColor: 'var(--color-green)', cursor: 'pointer' }}
             />
-            <label htmlFor="is_urgent" style={{ fontSize: '14px', color: '#374151', cursor: 'pointer' }}>
-              Mark as urgent
-            </label>
-          </div>
+            Mark as urgent
+          </label>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            style={{
-              background: submitting ? '#9ca3af' : '#1D6A48',
-              color: '#fff',
-              padding: '0.75rem',
-              borderRadius: '6px',
-              border: 'none',
-              fontSize: '15px',
-              fontWeight: '500',
-              cursor: submitting ? 'not-allowed' : 'pointer',
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <button type="submit" disabled={submitting} className="btn-primary">
             {submitting && <span className="spinner-white" />}
-            {submitting ? 'Posting...' : 'Post Need'}
+            {submitting ? 'Posting…' : 'Post Need'}
           </button>
 
         </div>

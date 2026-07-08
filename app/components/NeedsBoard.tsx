@@ -18,43 +18,30 @@ export default function NeedsBoard({ initialNeeds }: { initialNeeds: Need[] }) {
     ? needs
     : needs.filter(need => need.category === activeCategory)
 
-  const filters = (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.5rem' }}>
-      {CATEGORIES.map(category => {
-        const isActive = category === activeCategory
-        return (
+  return (
+    <>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '2rem' }}>
+        {CATEGORIES.map(category => (
           <button
             key={category}
             onClick={() => setActiveCategory(category)}
-            className="filter-btn"
-            style={{
-              fontSize: '13px',
-              fontWeight: '500',
-              padding: '0.4rem 0.9rem',
-              borderRadius: '100px',
-              border: 'none',
-              cursor: 'pointer',
-              textTransform: 'capitalize',
-              background: isActive ? '#1D6A48' : '#f3f4f6',
-              color: isActive ? '#fff' : '#6b7280',
-            }}
+            className={`filter-pill${category === activeCategory ? ' filter-pill--active' : ''}`}
           >
             {category}
           </button>
-        )
-      })}
-    </div>
-  )
+        ))}
+      </div>
 
-  return (
-    <>
-      {filters}
       {needs.length === 0 ? (
-        <p style={{ color: '#9ca3af' }}>No needs posted yet. Be the first to post one.</p>
+        <p style={{ color: 'var(--color-sage)', fontFamily: 'var(--font-ibm-plex-mono), monospace', fontSize: '13px' }}>
+          No needs posted yet. Be the first to post one.
+        </p>
       ) : filteredNeeds.length === 0 ? (
-        <p style={{ color: '#9ca3af' }}>No needs in this category right now.</p>
+        <p style={{ color: 'var(--color-sage)', fontFamily: 'var(--font-ibm-plex-mono), monospace', fontSize: '13px' }}>
+          No needs in this category right now.
+        </p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingTop: '8px' }}>
           {filteredNeeds.map((need) => (
             <NeedCard key={need.id} need={need} onFulfilled={handleFulfilled} />
           ))}

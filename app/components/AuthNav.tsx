@@ -7,29 +7,28 @@ import type { Session } from '@supabase/supabase-js'
 
 export default function AuthNav() {
   const router = useRouter()
-  // undefined = still loading; null = not logged in; Session = logged in
   const [session, setSession] = useState<Session | null | undefined>(undefined)
-  const [orgName, setOrgName] = useState<string | null>(null)
+  const [profileName, setProfileName] = useState<string | null>(null)
 
-  const fetchOrg = async (userId: string) => {
-    const { data } = await supabase
-      .from('organisations')
-      .select('name')
-      .eq('owner_id', userId)
-      .maybeSingle()
-    setOrgName(data?.name ?? null)
+  const fetchProfile = async (userId: string) => {
+    // Fetch both in parallel — whichever returns a name wins (org takes priority)
+    const [{ data: orgData }, { data: volData }] = await Promise.all([
+      supabase.from('organisations').select('name').eq('owner_id', userId).maybeSingle(),
+      supabase.from('volunteers').select('name').eq('id', userId).maybeSingle(),
+    ])
+    setProfileName(orgData?.name ?? volData?.name ?? null)
   }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
-      if (session?.user) fetchOrg(session.user.id)
+      if (session?.user) fetchProfile(session.user.id)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
-      if (session?.user) fetchOrg(session.user.id)
-      else setOrgName(null)
+      if (session?.user) fetchProfile(session.user.id)
+      else setProfileName(null)
     })
 
     return () => subscription.unsubscribe()
@@ -37,38 +36,37 @@ export default function AuthNav() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    setOrgName(null)
+    setProfileName(null)
     router.push('/')
     router.refresh()
   }
 
-  // Render nothing during SSR and initial hydration to avoid mismatch
   if (session === undefined) return null
 
   if (session) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        {orgName && (
+        {profileName && (
           <span style={{
             fontSize: '13px',
             fontWeight: '500',
-            color: '#374151',
-            fontFamily: 'sans-serif',
+            color: 'var(--color-sage)',
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
           }}>
-            {orgName}
+            {profileName}
           </span>
         )}
         <button
           onClick={handleLogout}
           style={{
             background: 'none',
-            border: '1px solid #e5e7eb',
-            borderRadius: '6px',
-            padding: '0.35rem 0.75rem',
+            border: '1px solid var(--color-border)',
+            borderRadius: '7px',
+            padding: '0.35rem 0.85rem',
             fontSize: '13px',
-            color: '#6b7280',
+            color: 'var(--color-sage)',
             cursor: 'pointer',
-            fontFamily: 'sans-serif',
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
           }}
         >
           Log out
@@ -78,14 +76,14 @@ export default function AuthNav() {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
       <a
         href="/login"
         style={{
           fontSize: '13px',
-          color: '#6b7280',
+          color: 'var(--color-sage)',
           textDecoration: 'none',
-          fontFamily: 'sans-serif',
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
         }}
       >
         Log in
@@ -96,11 +94,11 @@ export default function AuthNav() {
           fontSize: '13px',
           fontWeight: '500',
           color: '#fff',
-          background: '#1D6A48',
-          padding: '0.35rem 0.75rem',
-          borderRadius: '6px',
+          background: 'var(--color-green)',
+          padding: '0.35rem 0.85rem',
+          borderRadius: '7px',
           textDecoration: 'none',
-          fontFamily: 'sans-serif',
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
         }}
       >
         Sign up

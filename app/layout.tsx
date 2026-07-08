@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import UnregisterStaleServiceWorker from "@/app/components/UnregisterStaleServiceWorker";
 import AuthNav from "@/app/components/AuthNav";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,20 +36,27 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <UnregisterStaleServiceWorker />
-        <header style={{ borderBottom: '1px solid #e5e7eb', background: '#fff' }}>
+        <header style={{
+          borderBottom: '1px solid var(--color-border)',
+          background: 'var(--color-bg)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+        }}>
           <div className="nav-inner">
             <a
               href="/"
               style={{
                 fontSize: '15px',
-                fontWeight: '600',
-                color: '#1D6A48',
+                fontWeight: '700',
+                color: 'var(--color-green)',
                 textDecoration: 'none',
-                fontFamily: 'sans-serif',
+                fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+                letterSpacing: '-0.01em',
               }}
             >
               Community Needs Board

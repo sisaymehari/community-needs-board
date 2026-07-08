@@ -12,31 +12,54 @@ export default async function HomePage() {
     .order('created_at', { ascending: false })
 
   return (
-    <main className="page-wrap" style={{ fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto', background: '#fff', minHeight: '100vh' }}>
-      <div style={{ marginBottom: '2.5rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
+    <main className="page-wrap" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '3rem' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+          fontSize: 'clamp(1.9rem, 4vw, 2.6rem)',
+          fontWeight: '700',
+          lineHeight: '1.13',
+          letterSpacing: '-0.02em',
+          color: 'var(--color-ink)',
+          margin: '0 0 0.9rem',
+        }}>
           Community Needs Board
         </h1>
-        <p style={{ color: '#6b7280', fontSize: '1rem', lineHeight: '1.7', marginBottom: '0.4rem' }}>
-          Local charities and community organisations post what they need — volunteers, food, equipment, skills — and anyone can see it and offer to help directly.
+        <p style={{
+          color: 'var(--color-sage)',
+          fontSize: '1rem',
+          lineHeight: '1.75',
+          marginBottom: '0.4rem',
+          maxWidth: '600px',
+        }}>
+          Local charities and community organisations post what they need — volunteers, food,
+          equipment, skills — and anyone can see it and offer to help directly.
           No middlemen, no sign-up required.
         </p>
-        <p style={{ color: '#9ca3af', fontSize: '0.9rem' }}>
-          Free and open source. Built for Enfield, open to anyone.
+        <p style={{
+          fontSize: '0.85rem',
+          fontFamily: 'var(--font-ibm-plex-mono), monospace',
+          marginBottom: '1.5rem',
+          color: 'var(--color-sage)',
+          opacity: 0.7,
+        }}>
+          Free and open source · Built for Enfield, open to anyone
         </p>
         <a
           href="/post"
           className="hero-cta"
           style={{
-            display: 'inline-block',
-            marginTop: '1rem',
-            background: '#1D6A48',
+            display: 'inline-flex',
+            alignItems: 'center',
+            background: 'var(--color-green)',
             color: '#fff',
-            padding: '0.6rem 1.2rem',
-            borderRadius: '6px',
+            padding: '0.65rem 1.35rem',
+            borderRadius: '7px',
             textDecoration: 'none',
             fontSize: '14px',
             fontWeight: '500',
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            letterSpacing: '0.01em',
           }}
         >
           Post a Need
