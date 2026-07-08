@@ -5,18 +5,34 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import type { Session } from '@supabase/supabase-js'
 
+type AccountType = 'org' | 'volunteer' | null
+
 export default function AuthNav() {
   const router = useRouter()
   const [session, setSession] = useState<Session | null | undefined>(undefined)
   const [profileName, setProfileName] = useState<string | null>(null)
+  const [accountType, setAccountType] = useState<AccountType>(null)
 
   const fetchProfile = async (userId: string) => {
-    // Fetch both in parallel — whichever returns a name wins (org takes priority)
     const [{ data: orgData }, { data: volData }] = await Promise.all([
       supabase.from('organisations').select('name').eq('owner_id', userId).maybeSingle(),
       supabase.from('volunteers').select('name').eq('id', userId).maybeSingle(),
     ])
-    setProfileName(orgData?.name ?? volData?.name ?? null)
+    if (orgData?.name) {
+      setProfileName(orgData.name)
+      setAccountType('org')
+    } else if (volData?.name) {
+      setProfileName(volData.name)
+      setAccountType('volunteer')
+    } else {
+      setProfileName(null)
+      setAccountType(null)
+    }
+  }
+
+  const clearProfile = () => {
+    setProfileName(null)
+    setAccountType(null)
   }
 
   useEffect(() => {
@@ -28,7 +44,7 @@ export default function AuthNav() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       if (session?.user) fetchProfile(session.user.id)
-      else setProfileName(null)
+      else clearProfile()
     })
 
     return () => subscription.unsubscribe()
@@ -36,7 +52,7 @@ export default function AuthNav() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    setProfileName(null)
+    clearProfile()
     router.push('/')
     router.refresh()
   }
@@ -55,6 +71,19 @@ export default function AuthNav() {
           }}>
             {profileName}
           </span>
+        )}
+        {accountType === 'volunteer' && (
+          <a
+            href="/my-offers"
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-sage)',
+              textDecoration: 'none',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}
+          >
+            My Offers
+          </a>
         )}
         <button
           onClick={handleLogout}
