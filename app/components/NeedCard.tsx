@@ -43,13 +43,16 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
   const handleFulfill = async () => {
     setFulfilling(true)
     setFulfillError('')
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('needs')
       .update({ is_fulfilled: true })
       .eq('id', need.id)
+      .select('id')
 
     if (error) {
       setFulfillError('Something went wrong. Please try again.')
+    } else if (!data || data.length === 0) {
+      setFulfillError("You don't have permission to update this need.")
     } else {
       onFulfilled(need.id)
     }

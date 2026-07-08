@@ -16,7 +16,7 @@ export default function AuthNav() {
       .from('organisations')
       .select('name')
       .eq('owner_id', userId)
-      .single()
+      .maybeSingle()
     setOrgName(data?.name ?? null)
   }
 
