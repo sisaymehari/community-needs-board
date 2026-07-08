@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 const baseInputStyle = {
   width: '100%',
@@ -32,8 +32,11 @@ function inputStyle(hasError: boolean) {
   return { ...baseInputStyle, border: `1px solid ${hasError ? '#ef4444' : '#e5e7eb'}` }
 }
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectMessage = searchParams.get('message')
+
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -73,7 +76,6 @@ export default function LoginPage() {
       router.refresh()
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
-      // Supabase returns "Invalid login credentials" — rephrase it
       setSubmitError(
         message.includes('Invalid login credentials')
           ? 'Email or password is incorrect.'
@@ -90,8 +92,19 @@ export default function LoginPage() {
         Log in
       </h1>
       <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '2rem' }}>
-        Log in to manage your organisation's needs.
+        Log in to manage your organisation&apos;s needs.
       </p>
+
+      {redirectMessage && (
+        <div style={{
+          background: '#fffbeb', color: '#92400e',
+          padding: '0.75rem 1rem', borderRadius: '6px',
+          marginBottom: '1.5rem', fontSize: '14px',
+          border: '1px solid #fde68a',
+        }}>
+          {redirectMessage}
+        </div>
+      )}
 
       {submitError && (
         <div role="alert" style={{
@@ -174,5 +187,14 @@ export default function LoginPage() {
         </div>
       </form>
     </main>
+  )
+}
+
+// useSearchParams() requires a Suspense boundary in Next.js App Router
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   )
 }
