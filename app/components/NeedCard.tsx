@@ -78,15 +78,18 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
     helperMessage: string | null,
   ) => {
     try {
-      const { data: orgData } = await supabase
+      const { data: orgData, error: orgError } = await supabase
         .from('organisations')
         .select('name, email')
         .eq('id', need.organisation_id)
         .single()
 
-      if (!orgData?.email) return
+      if (orgError || !orgData?.email) {
+        console.error('[notify] org lookup failed', { organisation_id: need.organisation_id, orgError })
+        return
+      }
 
-      await supabase.functions.invoke('send-offer-notification', {
+      const { error: fnError } = await supabase.functions.invoke('send-offer-notification', {
         body: {
           orgEmail: orgData.email,
           orgName: orgData.name,
@@ -96,8 +99,12 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
           helperMessage,
         },
       })
-    } catch {
-      // Notification failure is silent — the offer is already saved
+
+      if (fnError) {
+        console.error('[notify] edge function returned error', fnError)
+      }
+    } catch (err) {
+      console.error('[notify] unexpected error', err)
     }
   }
 
