@@ -26,6 +26,17 @@ body {
 }
 
 /* ---- Layout ---- */
+.nav-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0.75rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .page-wrap {
   padding: 2rem;
   width: 100%;
@@ -38,6 +49,10 @@ body {
 
 /* ---- Mobile responsive ---- */
 @media (max-width: 640px) {
+  .nav-inner {
+    padding: 0.75rem 1rem;
+  }
+
   .page-wrap {
     padding: 1.25rem 1rem;
   }
