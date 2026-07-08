@@ -84,14 +84,23 @@ export default function SignupPage() {
       if (authError) throw authError
       if (!authData.user) throw new Error('Sign up failed — please try again.')
 
-      const { error: orgError } = await supabase
+      console.log('[signup] authData:', JSON.stringify(authData, null, 2))
+
+      const insertPayload = {
+        name: form.org_name.trim(),
+        location: form.org_location.trim(),
+        email: form.email.trim(),
+        owner_id: authData.user.id,
+      }
+      console.log('[signup] inserting org with payload:', JSON.stringify(insertPayload, null, 2))
+
+      const { data: orgData, error: orgError } = await supabase
         .from('organisations')
-        .insert({
-          name: form.org_name.trim(),
-          location: form.org_location.trim(),
-          email: form.email.trim(),
-          owner_id: authData.user.id,
-        })
+        .insert(insertPayload)
+        .select('id, owner_id')
+        .single()
+
+      console.log('[signup] insert result — data:', orgData, '| error:', orgError)
 
       if (orgError) throw orgError
 
