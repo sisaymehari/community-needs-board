@@ -48,19 +48,32 @@ export default function RootLayout({
           zIndex: 10,
         }}>
           <div className="nav-inner">
-            <a
-              href="/"
-              style={{
-                fontSize: '15px',
-                fontWeight: '700',
-                color: 'var(--color-green)',
-                textDecoration: 'none',
-                fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
-                letterSpacing: '-0.01em',
-              }}
-            >
-              Community Needs Board
-            </a>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              <a
+                href="/"
+                style={{
+                  fontSize: '15px',
+                  fontWeight: '700',
+                  color: 'var(--color-green)',
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                Community Needs Board
+              </a>
+              <a
+                href="/impact"
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--color-sage)',
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-inter), system-ui, sans-serif',
+                }}
+              >
+                Impact
+              </a>
+            </div>
             <AuthNav />
           </div>
         </header>
