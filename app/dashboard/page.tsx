@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import DashEventSection from '@/app/components/DashEventSection'
 
 // ── Local types ──────────────────────────────────────────────────────────────
 
@@ -503,7 +504,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ── Recent offers ──────────────────────────────────────────── */}
-      <section>
+      <section style={{ marginBottom: '0' }}>
         <h2 style={{ ...sectionHeading, marginBottom: '1.25rem' }}>
           Recent Offers{totalOffersCount > 5 ? ` (${totalOffersCount} total)` : ''}
         </h2>
@@ -571,6 +572,9 @@ export default function DashboardPage() {
           </div>
         )}
       </section>
+
+      {/* ── Events ─────────────────────────────────────────────────── */}
+      {org && <DashEventSection orgId={org.id} />}
 
     </main>
   )

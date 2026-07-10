@@ -73,6 +73,17 @@ export default function RootLayout({
               >
                 Impact
               </a>
+              <a
+                href="/events"
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--color-sage)',
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-inter), system-ui, sans-serif',
+                }}
+              >
+                Events
+              </a>
             </div>
             <AuthNav />
           </div>
