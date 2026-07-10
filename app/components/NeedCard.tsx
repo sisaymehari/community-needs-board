@@ -317,7 +317,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
                   aria-describedby={offerFieldErrors.name ? `${need.id}-name-error` : undefined}
                 />
                 {offerFieldErrors.name && (
-                  <p id={`${need.id}-name-error`} role="alert" style={{ fontSize: '12px', color: '#e05252', margin: '0.25rem 0 0' }}>
+                  <p id={`${need.id}-name-error`} role="alert" style={{ fontSize: '12px', color: 'var(--color-error)', margin: '0.25rem 0 0' }}>
                     {offerFieldErrors.name}
                   </p>
                 )}
@@ -335,7 +335,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
                   aria-describedby={offerFieldErrors.email ? `${need.id}-email-error` : undefined}
                 />
                 {offerFieldErrors.email && (
-                  <p id={`${need.id}-email-error`} role="alert" style={{ fontSize: '12px', color: '#e05252', margin: '0.25rem 0 0' }}>
+                  <p id={`${need.id}-email-error`} role="alert" style={{ fontSize: '12px', color: 'var(--color-error)', margin: '0.25rem 0 0' }}>
                     {offerFieldErrors.email}
                   </p>
                 )}
@@ -354,7 +354,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
           />
 
           {offerError && (
-            <p role="alert" style={{ fontSize: '12px', color: '#e05252', margin: 0 }}>{offerError}</p>
+            <p role="alert" style={{ fontSize: '12px', color: 'var(--color-error)', margin: 0 }}>{offerError}</p>
           )}
 
           <button

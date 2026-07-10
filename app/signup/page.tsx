@@ -19,7 +19,7 @@ const labelStyle: React.CSSProperties = {
 
 const fieldErrorStyle: React.CSSProperties = {
   fontSize: '12.5px',
-  color: '#e05252',
+  color: 'var(--color-error)',
   margin: '0.3rem 0 0',
   fontFamily: 'var(--font-inter), system-ui, sans-serif',
 }
@@ -209,13 +209,13 @@ export default function SignupPage() {
 
       {submitError && (
         <div role="alert" style={{
-          background: '#fef2f2',
-          color: '#c0392b',
+          background: 'var(--color-error-bg)',
+          color: 'var(--color-error)',
           padding: '0.75rem 1rem',
           borderRadius: '7px',
           marginBottom: '1.5rem',
           fontSize: '14px',
-          border: '1px solid #fecaca',
+          border: '1px solid var(--color-error-border)',
           fontFamily: 'var(--font-inter), system-ui, sans-serif',
         }}>
           {submitError}

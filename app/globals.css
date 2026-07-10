@@ -11,6 +11,9 @@
   --color-marigold:     #E8871E;
   --color-marigold-bg:  #FEF3E8;
   --color-border:       #E5E1D8;
+  --color-error:        #C0392B;
+  --color-error-bg:     #FEF2F2;
+  --color-error-border: #FECACA;
 }
 
 /* ── Base ───────────────────────────────────────────────────────── */
@@ -110,7 +113,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-sage);
   background: none;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: 9px;
   padding: 4px 10px;
   cursor: pointer;
   font-family: var(--font-inter), system-ui, sans-serif;
@@ -141,7 +144,7 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--color-green);
 }
 .form-input--error {
-  border-color: #e05252;
+  border-color: var(--color-error);
 }
 
 /* ── Mobile ─────────────────────────────────────────────────────── */

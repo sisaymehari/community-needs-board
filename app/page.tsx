@@ -13,7 +13,11 @@ export default async function HomePage() {
 
   return (
     <main className="page-wrap" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '3rem' }}>
+      <div style={{
+        paddingBottom: '2.5rem',
+        marginBottom: '2.5rem',
+        borderBottom: '1px solid var(--color-border)',
+      }}>
         <h1 style={{
           fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
           fontSize: 'clamp(1.9rem, 4vw, 2.6rem)',
@@ -39,7 +43,7 @@ export default async function HomePage() {
         <p style={{
           fontSize: '0.85rem',
           fontFamily: 'var(--font-ibm-plex-mono), monospace',
-          marginBottom: '1.5rem',
+          marginBottom: '0.85rem',
           color: 'var(--color-sage)',
           opacity: 0.7,
         }}>
@@ -47,20 +51,8 @@ export default async function HomePage() {
         </p>
         <a
           href="/post"
-          className="hero-cta"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            background: 'var(--color-green)',
-            color: '#fff',
-            padding: '0.65rem 1.35rem',
-            borderRadius: '7px',
-            textDecoration: 'none',
-            fontSize: '14px',
-            fontWeight: '500',
-            fontFamily: 'var(--font-inter), system-ui, sans-serif',
-            letterSpacing: '0.01em',
-          }}
+          className="btn-primary hero-cta"
+          style={{ width: 'auto', letterSpacing: '0.01em' }}
         >
           Post a Need
         </a>

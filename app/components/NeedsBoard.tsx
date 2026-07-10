@@ -33,11 +33,62 @@ export default function NeedsBoard({ initialNeeds }: { initialNeeds: Need[] }) {
       </div>
 
       {needs.length === 0 ? (
-        <p style={{ color: 'var(--color-sage)', fontFamily: 'var(--font-ibm-plex-mono), monospace', fontSize: '13px' }}>
-          No needs posted yet. Be the first to post one.
-        </p>
+        <div style={{
+          padding: '3rem 1.5rem',
+          border: '1px dashed var(--color-border)',
+          borderRadius: '10px',
+          textAlign: 'center',
+        }}>
+          <p style={{
+            fontSize: '2rem',
+            marginBottom: '0.75rem',
+            lineHeight: 1,
+          }}>📌</p>
+          <p style={{
+            fontSize: '15px',
+            fontWeight: '600',
+            color: 'var(--color-ink)',
+            marginBottom: '0.5rem',
+            fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+          }}>
+            The board is empty right now
+          </p>
+          <p style={{
+            fontSize: '14px',
+            color: 'var(--color-sage)',
+            lineHeight: '1.7',
+            maxWidth: '380px',
+            margin: '0 auto 1.5rem',
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
+          }}>
+            Local charities and community groups will post what they need here.
+            If you run an organisation, be the first to pin a need.
+          </p>
+          <a
+            href="/post"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: 'var(--color-green)',
+              color: '#fff',
+              padding: '0.6rem 1.25rem',
+              borderRadius: '7px',
+              textDecoration: 'none',
+              fontSize: '14px',
+              fontWeight: '500',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}
+          >
+            Post the first need
+          </a>
+        </div>
       ) : filteredNeeds.length === 0 ? (
-        <p style={{ color: 'var(--color-sage)', fontFamily: 'var(--font-ibm-plex-mono), monospace', fontSize: '13px' }}>
+        <p style={{
+          color: 'var(--color-sage)',
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
+          fontSize: '14px',
+          padding: '1.5rem 0',
+        }}>
           No needs in this category right now.
         </p>
       ) : (
