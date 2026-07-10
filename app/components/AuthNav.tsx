@@ -74,6 +74,19 @@ export default function AuthNav() {
         )}
         {accountType === 'org' && (
           <a
+            href="/dashboard"
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-sage)',
+              textDecoration: 'none',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}
+          >
+            Dashboard
+          </a>
+        )}
+        {accountType === 'org' && (
+          <a
             href="/donations"
             style={{
               fontSize: '13px',
