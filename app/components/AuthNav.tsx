@@ -72,6 +72,19 @@ export default function AuthNav() {
             {profileName}
           </span>
         )}
+        {accountType === 'org' && (
+          <a
+            href="/donations"
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-sage)',
+              textDecoration: 'none',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}
+          >
+            Donations
+          </a>
+        )}
         {accountType === 'volunteer' && (
           <a
             href="/my-offers"
