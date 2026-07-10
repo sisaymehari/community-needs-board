@@ -30,6 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# local diagnostic / one-off scripts (never commit — may contain keys)
+/scripts/
+
 # env files (can opt-in for committing if needed)
 .env*
 
