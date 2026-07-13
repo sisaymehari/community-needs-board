@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import DashEventSection from '@/app/components/DashEventSection'
+import DashGrantSection from '@/app/components/DashGrantSection'
 
 // ── Local types ──────────────────────────────────────────────────────────────
 
@@ -575,6 +576,9 @@ export default function DashboardPage() {
 
       {/* ── Events ─────────────────────────────────────────────────── */}
       {org && <DashEventSection orgId={org.id} />}
+
+      {/* ── Grant deadlines ────────────────────────────────────────── */}
+      {org && <DashGrantSection orgId={org.id} />}
 
     </main>
   )

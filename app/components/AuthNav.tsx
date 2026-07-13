@@ -111,6 +111,19 @@ export default function AuthNav() {
             Inventory
           </a>
         )}
+        {accountType === 'org' && (
+          <a
+            href="/grants"
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-sage)',
+              textDecoration: 'none',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}
+          >
+            Grants
+          </a>
+        )}
         {accountType === 'volunteer' && (
           <a
             href="/my-offers"
