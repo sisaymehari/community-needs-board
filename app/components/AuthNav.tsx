@@ -98,6 +98,19 @@ export default function AuthNav() {
             Donations
           </a>
         )}
+        {accountType === 'org' && (
+          <a
+            href="/inventory"
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-sage)',
+              textDecoration: 'none',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}
+          >
+            Inventory
+          </a>
+        )}
         {accountType === 'volunteer' && (
           <a
             href="/my-offers"
