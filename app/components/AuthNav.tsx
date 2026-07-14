@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import type { Session } from '@supabase/supabase-js'
 
-type AccountType = 'org' | 'volunteer' | null
+type AccountType = 'org' | 'volunteer' | 'business' | null
 
 export default function AuthNav() {
   const router = useRouter()
@@ -14,9 +14,10 @@ export default function AuthNav() {
   const [accountType, setAccountType] = useState<AccountType>(null)
 
   const fetchProfile = async (userId: string) => {
-    const [{ data: orgData }, { data: volData }] = await Promise.all([
+    const [{ data: orgData }, { data: volData }, { data: bizData }] = await Promise.all([
       supabase.from('organisations').select('name').eq('owner_id', userId).maybeSingle(),
       supabase.from('volunteers').select('name').eq('id', userId).maybeSingle(),
+      supabase.from('businesses').select('name').eq('id', userId).maybeSingle(),
     ])
     if (orgData?.name) {
       setProfileName(orgData.name)
@@ -24,6 +25,9 @@ export default function AuthNav() {
     } else if (volData?.name) {
       setProfileName(volData.name)
       setAccountType('volunteer')
+    } else if (bizData?.name) {
+      setProfileName(bizData.name)
+      setAccountType('business')
     } else {
       setProfileName(null)
       setAccountType(null)
@@ -148,6 +152,19 @@ export default function AuthNav() {
             }}
           >
             My Offers
+          </a>
+        )}
+        {accountType === 'business' && (
+          <a
+            href="/business-offers"
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-sage)',
+              textDecoration: 'none',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}
+          >
+            Business Offers
           </a>
         )}
         <button

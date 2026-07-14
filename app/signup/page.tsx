@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-type AccountType = 'org' | 'volunteer'
+type AccountType = 'org' | 'volunteer' | 'business'
 
 const labelStyle: React.CSSProperties = {
   display: 'block',
@@ -66,6 +66,7 @@ function TypeToggle({ value, onChange }: { value: AccountType; onChange: (t: Acc
     <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.75rem' }}>
       {btn('org', 'Organisation', 'Post needs to the board')}
       {btn('volunteer', 'Volunteer', 'Browse and offer to help')}
+      {btn('business', 'Business', 'Offer surplus stock to charities')}
     </div>
   )
 }
@@ -81,6 +82,7 @@ export default function SignupPage() {
     vol_name: '',
     org_name: '',
     org_location: '',
+    biz_name: '',
     email: '',
     password: '',
   })
@@ -102,6 +104,8 @@ export default function SignupPage() {
     if (accountType === 'org') {
       if (!form.org_name.trim()) errors.org_name = 'Organisation name is required.'
       if (!form.org_location.trim()) errors.org_location = 'Location is required.'
+    } else if (accountType === 'business') {
+      if (!form.biz_name.trim()) errors.biz_name = 'Business name is required.'
     } else {
       if (!form.vol_name.trim()) errors.vol_name = 'Your name is required.'
     }
@@ -132,10 +136,17 @@ export default function SignupPage() {
       if (authError) throw authError
       if (!authData.user) throw new Error('Sign up failed — please try again.')
 
-      const apiRoute = accountType === 'org' ? '/api/create-org' : '/api/create-volunteer'
+      const apiRoute = accountType === 'org'
+        ? '/api/create-org'
+        : accountType === 'business'
+          ? '/api/create-business'
+          : '/api/create-volunteer'
+
       const body = accountType === 'org'
         ? { user_id: authData.user.id, name: form.org_name.trim(), location: form.org_location.trim(), email: form.email.trim() }
-        : { user_id: authData.user.id, name: form.vol_name.trim(), email: form.email.trim() }
+        : accountType === 'business'
+          ? { user_id: authData.user.id, name: form.biz_name.trim(), email: form.email.trim() }
+          : { user_id: authData.user.id, name: form.vol_name.trim(), email: form.email.trim() }
 
       const res = await fetch(apiRoute, {
         method: 'POST',
@@ -242,6 +253,25 @@ export default function SignupPage() {
               />
               {fieldErrors.vol_name && (
                 <p id="vol_name-error" role="alert" style={fieldErrorStyle}>{fieldErrors.vol_name}</p>
+              )}
+            </div>
+          )}
+
+          {accountType === 'business' && (
+            <div>
+              <label htmlFor="biz_name" style={labelStyle}>Business name</label>
+              <input
+                id="biz_name"
+                name="biz_name"
+                className={`form-input${fieldErrors.biz_name ? ' form-input--error' : ''}`}
+                value={form.biz_name}
+                onChange={handleChange}
+                placeholder="e.g. Green Grocer Ltd"
+                aria-invalid={fieldErrors.biz_name ? true : undefined}
+                aria-describedby={fieldErrors.biz_name ? 'biz_name-error' : undefined}
+              />
+              {fieldErrors.biz_name && (
+                <p id="biz_name-error" role="alert" style={fieldErrorStyle}>{fieldErrors.biz_name}</p>
               )}
             </div>
           )}

@@ -31,9 +31,18 @@ type ShareableItemRow = {
   organisations: { name: string } | null
 }
 
+type BusinessOfferRow = {
+  item_description: string
+  category: string
+  business_id: string
+  businesses: { name: string } | null
+}
+
+type Supplier = { name: string; kind: 'Charity' | 'Business'; items: string[] }
+
 type MatchGroup = {
   need: NeedRow
-  suppliers: { orgName: string; items: string[] }[]
+  suppliers: Supplier[]
 }
 
 // ── Page ─────────────────────────────────────────────────────────────────────
@@ -51,7 +60,7 @@ export default async function MatchesPage() {
     { auth: { autoRefreshToken: false, persistSession: false } },
   )
 
-  const [needsRes, itemsRes] = await Promise.all([
+  const [needsRes, itemsRes, businessOffersRes] = await Promise.all([
     admin
       .from('needs')
       .select('id, description, category, organisation_id, organisations(name)')
@@ -60,33 +69,60 @@ export default async function MatchesPage() {
       .from('inventory_items')
       .select('item_name, category, organisation_id, organisations(name)')
       .eq('available_to_share', true),
+    admin
+      .from('business_offers')
+      .select('item_description, category, business_id, businesses(name)')
+      .eq('available', true),
   ])
+
+  if (businessOffersRes.error) {
+    console.error('[matches] Failed to fetch business_offers:', businessOffersRes.error)
+  }
 
   const needs = (needsRes.data as unknown as NeedRow[]) ?? []
   const shareableItems = (itemsRes.data as unknown as ShareableItemRow[]) ?? []
+  const businessOffers = (businessOffersRes.data as unknown as BusinessOfferRow[]) ?? []
 
   const matches: MatchGroup[] = []
 
   for (const need of needs) {
-    const suppliersByOrg = new Map<string, { orgName: string; items: string[] }>()
+    const suppliersByKey = new Map<string, Supplier>()
 
     for (const item of shareableItems) {
       if (item.category !== need.category) continue
       if (item.organisation_id === need.organisation_id) continue
 
-      const existing = suppliersByOrg.get(item.organisation_id)
+      const key = `charity:${item.organisation_id}`
+      const existing = suppliersByKey.get(key)
       if (existing) {
         existing.items.push(item.item_name)
       } else {
-        suppliersByOrg.set(item.organisation_id, {
-          orgName: item.organisations?.name ?? 'An organisation',
+        suppliersByKey.set(key, {
+          name: item.organisations?.name ?? 'An organisation',
+          kind: 'Charity',
           items: [item.item_name],
         })
       }
     }
 
-    if (suppliersByOrg.size > 0) {
-      matches.push({ need, suppliers: Array.from(suppliersByOrg.values()) })
+    for (const offer of businessOffers) {
+      if (offer.category !== need.category) continue
+
+      const key = `business:${offer.business_id}`
+      const existing = suppliersByKey.get(key)
+      if (existing) {
+        existing.items.push(offer.item_description)
+      } else {
+        suppliersByKey.set(key, {
+          name: offer.businesses?.name ?? 'A business',
+          kind: 'Business',
+          items: [offer.item_description],
+        })
+      }
+    }
+
+    if (suppliersByKey.size > 0) {
+      matches.push({ need, suppliers: Array.from(suppliersByKey.values()) })
     }
   }
 
@@ -113,9 +149,9 @@ export default async function MatchesPage() {
           lineHeight: '1.7',
           maxWidth: '620px',
         }}>
-          When one organisation has surplus stock in a category another organisation needs,
-          it shows up here. Exact quantities stay private — reach out directly to arrange a
-          handover.
+          When a charity or local business has surplus stock in a category another organisation
+          needs, it shows up here. Exact quantities stay private — reach out directly to arrange
+          a handover.
         </p>
       </div>
 
@@ -193,19 +229,31 @@ export default async function MatchesPage() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                 {suppliers.map(supplier => (
-                  <div key={supplier.orgName} style={{
+                  <div key={`${supplier.kind}:${supplier.name}`} style={{
                     background: 'var(--color-marigold-bg)',
                     border: '1px solid var(--color-marigold)',
                     borderRadius: '8px',
                     padding: '0.75rem 1rem',
                   }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.3rem' }}>
+                      <span style={{
+                        ...monoSm,
+                        background: supplier.kind === 'Business' ? '#fff' : 'var(--color-marigold)',
+                        color: supplier.kind === 'Business' ? 'var(--color-marigold)' : '#fff',
+                        border: supplier.kind === 'Business' ? '1px solid var(--color-marigold)' : 'none',
+                        padding: '1px 8px',
+                        borderRadius: '100px',
+                      }}>
+                        {supplier.kind}
+                      </span>
+                    </div>
                     <p style={{
                       fontSize: '14px',
                       color: 'var(--color-ink)',
                       fontFamily: 'var(--font-inter), system-ui, sans-serif',
                       margin: 0,
                     }}>
-                      <strong>{supplier.orgName}</strong> has surplus {need.category} available.
+                      <strong>{supplier.name}</strong> has surplus {need.category} available.
                     </p>
                     <p style={{
                       fontSize: '12.5px',
