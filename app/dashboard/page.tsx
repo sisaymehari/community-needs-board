@@ -117,6 +117,10 @@ function DashNeedCard({
 }) {
   const [fulfilling, setFulfilling] = useState(false)
   const [error, setError] = useState('')
+  const [generatingPost, setGeneratingPost] = useState(false)
+  const [postText, setPostText] = useState('')
+  const [postError, setPostError] = useState('')
+  const [postCopied, setPostCopied] = useState(false)
 
   const handleFulfill = async () => {
     setFulfilling(true)
@@ -133,6 +137,49 @@ function DashNeedCard({
       onFulfilled(need.id)
     }
     setFulfilling(false)
+  }
+
+  const handleGeneratePost = async () => {
+    setGeneratingPost(true)
+    setPostError('')
+    setPostCopied(false)
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        setPostError('Your session has expired. Please log in again.')
+        return
+      }
+
+      const res = await fetch('/api/generate-social-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: session.user.id, need_id: need.id }),
+      })
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        setPostError(body.error ?? 'Something went wrong generating the post. Please try again.')
+        return
+      }
+
+      const data = await res.json()
+      setPostText(data.post ?? '')
+    } catch {
+      setPostError('Something went wrong generating the post. Please try again.')
+    } finally {
+      setGeneratingPost(false)
+    }
+  }
+
+  const handleCopyPost = async () => {
+    try {
+      await navigator.clipboard.writeText(postText)
+      setPostCopied(true)
+      setTimeout(() => setPostCopied(false), 2000)
+    } catch {
+      setPostError('Could not copy to clipboard.')
+    }
   }
 
   return (
@@ -200,20 +247,70 @@ function DashNeedCard({
         {need.description}
       </p>
 
-      <button
-        onClick={handleFulfill}
-        disabled={fulfilling}
-        className="card-action-btn"
-        style={{ cursor: fulfilling ? 'not-allowed' : undefined }}
-      >
-        {fulfilling && <span className="spinner-grey" style={{ marginRight: '5px' }} />}
-        {fulfilling ? 'Saving…' : 'Mark as fulfilled'}
-      </button>
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <button
+          onClick={handleFulfill}
+          disabled={fulfilling}
+          className="card-action-btn"
+          style={{ cursor: fulfilling ? 'not-allowed' : undefined }}
+        >
+          {fulfilling && <span className="spinner-grey" style={{ marginRight: '5px' }} />}
+          {fulfilling ? 'Saving…' : 'Mark as fulfilled'}
+        </button>
+
+        <button
+          onClick={handleGeneratePost}
+          disabled={generatingPost}
+          className="card-action-btn"
+          style={{ cursor: generatingPost ? 'not-allowed' : undefined }}
+        >
+          {generatingPost && <span className="spinner-grey" style={{ marginRight: '5px' }} />}
+          {generatingPost ? 'Generating…' : postText ? 'Regenerate social post' : 'Generate social post'}
+        </button>
+      </div>
 
       {error && (
         <p role="alert" style={{ fontSize: '12px', color: 'var(--color-error)', marginTop: '0.4rem' }}>
           {error}
         </p>
+      )}
+
+      {postError && (
+        <p role="alert" style={{ fontSize: '12px', color: 'var(--color-error)', marginTop: '0.4rem' }}>
+          {postError}
+        </p>
+      )}
+
+      {postText && (
+        <div style={{
+          marginTop: '0.9rem',
+          border: '1px solid var(--color-green)',
+          background: 'var(--color-green-light)',
+          borderRadius: '8px',
+          padding: '0.9rem 1rem',
+        }}>
+          <p style={{
+            fontSize: '13.5px',
+            color: 'var(--color-ink)',
+            lineHeight: '1.55',
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            whiteSpace: 'pre-wrap',
+            margin: '0 0 0.6rem',
+          }}>
+            {postText}
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{
+              ...monoSm,
+              color: postText.length > 280 ? 'var(--color-error)' : 'var(--color-sage)',
+            }}>
+              {postText.length} / 280 characters
+            </span>
+            <button onClick={handleCopyPost} className="card-action-btn">
+              {postCopied ? 'Copied!' : 'Copy to clipboard'}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )
