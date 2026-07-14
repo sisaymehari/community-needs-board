@@ -39,6 +39,15 @@ const fieldErrorStyle: React.CSSProperties = {
   fontFamily: 'var(--font-inter), system-ui, sans-serif',
 }
 
+const labelStyle: React.CSSProperties = {
+  display: 'block',
+  fontSize: '13.5px',
+  fontWeight: '500',
+  marginBottom: '0.4rem',
+  color: 'var(--color-ink)',
+  fontFamily: 'var(--font-inter), system-ui, sans-serif',
+}
+
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
@@ -247,6 +256,9 @@ export default function DocumentsPage() {
         <form onSubmit={handleUpload} noValidate>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
             <div>
+              <label htmlFor="file" style={labelStyle}>
+                Document
+              </label>
               <input
                 ref={fileInputRef}
                 id="file"
@@ -254,9 +266,11 @@ export default function DocumentsPage() {
                 type="file"
                 className={`form-input${fileError ? ' form-input--error' : ''}`}
                 onChange={handleFileChange}
+                aria-invalid={fileError ? true : undefined}
+                aria-describedby={fileError ? 'file-error' : undefined}
                 style={{ padding: '0.5rem 0.7rem' }}
               />
-              {fileError && <p role="alert" style={fieldErrorStyle}>{fileError}</p>}
+              {fileError && <p id="file-error" role="alert" style={fieldErrorStyle}>{fileError}</p>}
               <p style={{
                 fontSize: '12.5px',
                 color: 'var(--color-sage)',
