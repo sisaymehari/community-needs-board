@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import DashEventSection from '@/app/components/DashEventSection'
 import DashGrantSection from '@/app/components/DashGrantSection'
+import DashReportSection from '@/app/components/DashReportSection'
 
 // ── Local types ──────────────────────────────────────────────────────────────
 
@@ -579,6 +580,9 @@ export default function DashboardPage() {
 
       {/* ── Grant deadlines ────────────────────────────────────────── */}
       {org && <DashGrantSection orgId={org.id} />}
+
+      {/* ── Impact report ──────────────────────────────────────────── */}
+      {org && <DashReportSection orgId={org.id} />}
 
     </main>
   )
