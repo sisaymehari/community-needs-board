@@ -124,6 +124,19 @@ export default function AuthNav() {
             Grants
           </a>
         )}
+        {accountType === 'org' && (
+          <a
+            href="/documents"
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-sage)',
+              textDecoration: 'none',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}
+          >
+            Documents
+          </a>
+        )}
         {accountType === 'volunteer' && (
           <a
             href="/my-offers"
