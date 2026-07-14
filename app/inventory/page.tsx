@@ -12,8 +12,15 @@ type InventoryItemRow = {
   category: Category
   quantity: number
   notes: string | null
+  available_to_share: boolean
   created_at: string
   updated_at: string
+}
+
+type MatchingNeed = {
+  id: string
+  category: Category
+  organisations: { name: string } | null
 }
 
 const CATEGORIES: Category[] = ['food', 'clothing', 'equipment', 'other']
@@ -63,11 +70,12 @@ export default function InventoryPage() {
   const [loading, setLoading] = useState(true)
   const [org, setOrg] = useState<{ id: string; name: string } | null>(null)
   const [items, setItems] = useState<InventoryItemRow[]>([])
-  const [form, setForm] = useState({ item_name: '', category: 'food' as Category, quantity: '1', notes: '' })
+  const [form, setForm] = useState({ item_name: '', category: 'food' as Category, quantity: '1', notes: '', available_to_share: false })
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [pendingIds, setPendingIds] = useState<Set<string>>(new Set())
+  const [matchingNeeds, setMatchingNeeds] = useState<MatchingNeed[]>([])
 
   useEffect(() => {
     async function load() {
@@ -93,13 +101,29 @@ export default function InventoryPage() {
 
       const { data } = await supabase
         .from('inventory_items')
-        .select('id, item_name, category, quantity, notes, created_at, updated_at')
+        .select('id, item_name, category, quantity, notes, available_to_share, created_at, updated_at')
         .eq('organisation_id', orgData.id)
         .order('category', { ascending: true })
         .order('item_name', { ascending: true })
 
-      setItems((data as InventoryItemRow[]) ?? [])
+      const loadedItems = (data as InventoryItemRow[]) ?? []
+      setItems(loadedItems)
       setLoading(false)
+
+      const sharedCategories = [...new Set(
+        loadedItems.filter(i => i.available_to_share).map(i => i.category)
+      )]
+
+      if (sharedCategories.length > 0) {
+        const { data: needsData } = await supabase
+          .from('needs')
+          .select('id, category, organisations(name)')
+          .eq('is_fulfilled', false)
+          .neq('organisation_id', orgData.id)
+          .in('category', sharedCategories)
+
+        setMatchingNeeds((needsData as unknown as MatchingNeed[]) ?? [])
+      }
     }
 
     load()
@@ -109,6 +133,11 @@ export default function InventoryPage() {
     const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
     if (fieldErrors[name]) setFieldErrors(prev => ({ ...prev, [name]: '' }))
+  }
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target
+    setForm(prev => ({ ...prev, [name]: checked }))
   }
 
   const validate = (): Record<string, string> => {
@@ -139,18 +168,19 @@ export default function InventoryPage() {
         category: form.category,
         quantity: Number(form.quantity),
         notes: form.notes.trim() || null,
+        available_to_share: form.available_to_share,
       }
 
       const { data, error } = await supabase
         .from('inventory_items')
         .insert(payload)
-        .select('id, item_name, category, quantity, notes, created_at, updated_at')
+        .select('id, item_name, category, quantity, notes, available_to_share, created_at, updated_at')
         .single()
 
       if (error) throw error
 
       setItems(prev => [...prev, data as InventoryItemRow])
-      setForm({ item_name: '', category: 'food', quantity: '1', notes: '' })
+      setForm({ item_name: '', category: 'food', quantity: '1', notes: '', available_to_share: false })
       setFieldErrors({})
     } catch (err: unknown) {
       setSubmitError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
@@ -177,6 +207,33 @@ export default function InventoryPage() {
       .update({ quantity: nextQuantity })
       .eq('id', item.id)
       .select('id, item_name, category, quantity, notes, created_at, updated_at')
+      .single()
+
+    setPendingIds(prev => {
+      const next = new Set(prev)
+      next.delete(item.id)
+      return next
+    })
+
+    if (error) {
+      setItems(prev => prev.map(i => (i.id === item.id ? item : i)))
+      return
+    }
+
+    setItems(prev => prev.map(i => (i.id === item.id ? (data as InventoryItemRow) : i)))
+  }
+
+  const toggleShare = async (item: InventoryItemRow) => {
+    const nextValue = !item.available_to_share
+
+    setPendingIds(prev => new Set(prev).add(item.id))
+    setItems(prev => prev.map(i => (i.id === item.id ? { ...i, available_to_share: nextValue } : i)))
+
+    const { data, error } = await supabase
+      .from('inventory_items')
+      .update({ available_to_share: nextValue })
+      .eq('id', item.id)
+      .select('id, item_name, category, quantity, notes, available_to_share, created_at, updated_at')
       .single()
 
     setPendingIds(prev => {
@@ -346,6 +403,25 @@ export default function InventoryPage() {
               />
             </div>
 
+            <label style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              fontSize: '13.5px',
+              color: 'var(--color-ink)',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+              cursor: 'pointer',
+            }}>
+              <input
+                type="checkbox"
+                name="available_to_share"
+                checked={form.available_to_share}
+                onChange={handleCheckboxChange}
+                style={{ width: '16px', height: '16px', accentColor: 'var(--color-green)' }}
+              />
+              Available to share with other charities
+            </label>
+
             <button
               type="submit"
               disabled={submitting}
@@ -359,6 +435,27 @@ export default function InventoryPage() {
           </div>
         </form>
       </section>
+
+      {matchingNeeds.length > 0 && (
+        <div style={{
+          background: 'var(--color-green-light)',
+          border: '1px solid var(--color-green)',
+          borderRadius: '10px',
+          padding: '1rem 1.25rem',
+          marginBottom: '2rem',
+          fontSize: '13.5px',
+          color: 'var(--color-ink)',
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
+          lineHeight: '1.6',
+        }}>
+          <strong style={{ color: 'var(--color-green)' }}>Someone could use what you have to share:</strong>{' '}
+          {Array.from(new Set(matchingNeeds.map(n => n.organisations?.name).filter(Boolean))).join(', ')}{' '}
+          {matchingNeeds.length === 1 ? 'has' : 'have'} an open need matching a category you marked as shareable.{' '}
+          <a href="/matches" style={{ color: 'var(--color-green)', fontWeight: 600, textDecoration: 'none' }}>
+            See matches →
+          </a>
+        </div>
+      )}
 
       {/* Current stock */}
       <section>
@@ -428,6 +525,26 @@ export default function InventoryPage() {
                               {item.notes}
                             </div>
                           )}
+                          <label style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            marginTop: '5px',
+                            fontSize: '12px',
+                            color: item.available_to_share ? 'var(--color-green)' : 'var(--color-sage)',
+                            fontFamily: 'var(--font-inter), system-ui, sans-serif',
+                            cursor: 'pointer',
+                            width: 'fit-content',
+                          }}>
+                            <input
+                              type="checkbox"
+                              checked={item.available_to_share}
+                              disabled={isPending}
+                              onChange={() => toggleShare(item)}
+                              style={{ width: '13px', height: '13px', accentColor: 'var(--color-green)' }}
+                            />
+                            Available to share
+                          </label>
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>

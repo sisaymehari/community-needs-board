@@ -84,6 +84,17 @@ export default function RootLayout({
               >
                 Events
               </a>
+              <a
+                href="/matches"
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--color-sage)',
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-inter), system-ui, sans-serif',
+                }}
+              >
+                Matches
+              </a>
             </div>
             <AuthNav />
           </div>
