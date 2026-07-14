@@ -185,7 +185,7 @@ export default function DashEventSection({ orgId }: { orgId: string }) {
           Events{events.length > 0 ? ` (${events.length})` : ''}
         </h2>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <a href="/events" style={{
+          <a href="/events" className="text-link" style={{
             fontSize: '13px',
             color: 'var(--color-sage)',
             textDecoration: 'none',

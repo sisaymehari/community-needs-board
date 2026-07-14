@@ -157,17 +157,31 @@ export default async function MatchesPage() {
 
       {matches.length === 0 ? (
         <div style={{
-          padding: '2.5rem 1.5rem',
+          padding: '3rem 1.5rem',
           border: '1px dashed var(--color-border)',
           borderRadius: '10px',
           textAlign: 'center',
         }}>
+          <p style={{ fontSize: '2rem', marginBottom: '0.75rem', lineHeight: 1 }}>🔗</p>
           <p style={{
-            color: 'var(--color-sage)',
+            fontSize: '15px',
+            fontWeight: '600',
+            color: 'var(--color-ink)',
+            marginBottom: '0.5rem',
+            fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+          }}>
+            No matches right now
+          </p>
+          <p style={{
             fontSize: '14px',
+            color: 'var(--color-sage)',
+            lineHeight: '1.7',
+            maxWidth: '380px',
+            margin: '0 auto',
             fontFamily: 'var(--font-inter), system-ui, sans-serif',
           }}>
-            No matches right now — check back soon.
+            Check back soon — matches appear automatically when a charity or business marks
+            stock as available in a category another organisation needs.
           </p>
         </div>
       ) : (
@@ -180,17 +194,7 @@ export default async function MatchesPage() {
               padding: '1.5rem 1.75rem',
               background: '#fff',
             }}>
-              <span aria-hidden="true" style={{
-                position: 'absolute',
-                top: '-5px',
-                left: '20px',
-                width: '10px',
-                height: '10px',
-                borderRadius: '50%',
-                background: 'var(--color-green)',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.18), 0 0 0 2px var(--color-bg)',
-                display: 'block',
-              }} />
+              <span aria-hidden="true" className="pin-dot pin-dot--green" />
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '0.5rem' }}>
                 <span style={{ fontSize: '1.15rem', lineHeight: 1 }}>

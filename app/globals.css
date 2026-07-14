@@ -78,6 +78,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--color-green-hover);
   color: #fff;
 }
+.filter-pill:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
 
 /* ── Primary button ─────────────────────────────────────────────── */
 .btn-primary {
@@ -106,6 +110,10 @@ h1, h2, h3, h4, h5, h6 {
   background: #9ca3af;
   cursor: not-allowed;
 }
+.btn-primary:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
 
 /* ── Card ghost action buttons ──────────────────────────────────── */
 .card-action-btn {
@@ -125,6 +133,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--color-sage);
   color: var(--color-ink);
 }
+.card-action-btn:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
 
 /* ── Form inputs ────────────────────────────────────────────────── */
 .form-input {
@@ -143,15 +155,76 @@ h1, h2, h3, h4, h5, h6 {
 .form-input:focus {
   border-color: var(--color-green);
 }
+.form-input:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 1px;
+}
 .form-input--error {
   border-color: var(--color-error);
+}
+
+/* ── Small filled nav CTA (e.g. "Sign up") ─────────────────────────── */
+.nav-cta {
+  transition: background 0.12s;
+}
+.nav-cta:hover {
+  background: var(--color-green-hover);
+}
+.nav-cta:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+/* ── Plain text links (nav, "back to", "view all") ────────────────── */
+.text-link {
+  transition: color 0.12s;
+}
+.text-link:hover {
+  color: var(--color-green);
+  text-decoration: underline;
+}
+.text-link:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ── Pin marker (signature corkboard element) ─────────────────────── */
+.pin-dot {
+  position: absolute;
+  top: -5px;
+  left: 20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18), 0 0 0 2px var(--color-bg);
+  display: block;
+}
+.pin-dot--green    { background: var(--color-green); }
+.pin-dot--marigold { background: var(--color-marigold); }
+.pin-dot--error    { background: var(--color-error); }
+.pin-dot--sage     { background: var(--color-sage); }
+
+/* ── Account dropdown menu items ───────────────────────────────────── */
+.nav-menu-item {
+  transition: background 0.12s;
+}
+.nav-menu-item:hover {
+  background: var(--color-green-light);
+}
+.nav-menu-item:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: -2px;
 }
 
 /* ── Mobile ─────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .nav-inner {
-    padding: 0 1rem;
-    height: 52px;
+    padding: 0.5rem 1rem;
+    height: auto;
+    min-height: 52px;
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
   }
 
   .page-wrap {

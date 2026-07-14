@@ -78,7 +78,7 @@ export default function DashGrantSection({ orgId }: { orgId: string }) {
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
         <h2 style={sectionHeading}>Upcoming Grant Deadlines</h2>
-        <a href="/grants" style={{
+        <a href="/grants" className="text-link" style={{
           fontSize: '13px',
           color: 'var(--color-green)',
           textDecoration: 'none',
@@ -96,7 +96,7 @@ export default function DashGrantSection({ orgId }: { orgId: string }) {
           fontFamily: 'var(--font-inter), system-ui, sans-serif',
         }}>
           No upcoming deadlines.{' '}
-          <a href="/grants" style={{ color: 'var(--color-green)', textDecoration: 'none' }}>
+          <a href="/grants" className="text-link" style={{ color: 'var(--color-green)', textDecoration: 'none' }}>
             Track a grant →
           </a>
         </p>

@@ -146,18 +146,8 @@ export default function EventsBoard({ initialEvents }: { initialEvents: EventWit
             padding: '1.4rem 1.5rem 1.25rem',
             background: '#fff',
           }}>
-            {/* Pin — green for all events (upcoming = positive) */}
-            <span aria-hidden="true" style={{
-              position: 'absolute',
-              top: '-5px',
-              left: '20px',
-              width: '10px',
-              height: '10px',
-              borderRadius: '50%',
-              background: 'var(--color-green)',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.18), 0 0 0 2px var(--color-bg)',
-              display: 'block',
-            }} />
+            {/* Pin — green for all events (upcoming = positive), marigold once full */}
+            <span aria-hidden="true" className={`pin-dot ${isFull ? 'pin-dot--marigold' : 'pin-dot--green'}`} />
 
             {/* Header: date + spots */}
             <div style={{
@@ -200,6 +190,7 @@ export default function EventsBoard({ initialEvents }: { initialEvents: EventWit
             {event.organisations?.name && (
               <a
                 href={`/org/${event.organisation_id}`}
+                className="text-link"
                 style={{
                   fontSize: '13px',
                   color: 'var(--color-green)',

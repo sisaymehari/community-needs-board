@@ -166,7 +166,7 @@ function LoginForm() {
 
           <p style={{ fontSize: '13.5px', color: 'var(--color-sage)', textAlign: 'center', margin: 0, fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
             Don&apos;t have an account?{' '}
-            <a href="/signup" style={{ color: 'var(--color-green)', textDecoration: 'none', fontWeight: '500' }}>
+            <a href="/signup" className="text-link" style={{ color: 'var(--color-green)', textDecoration: 'none', fontWeight: '500' }}>
               Sign up
             </a>
           </p>

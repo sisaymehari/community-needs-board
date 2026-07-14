@@ -172,7 +172,7 @@ export default function DonationsPage() {
 
   return (
     <main className="page-wrap" style={{ maxWidth: '680px', margin: '0 auto' }}>
-      <a href="/" style={{
+      <a href="/" className="text-link" style={{
         fontSize: '13px',
         color: 'var(--color-sage)',
         textDecoration: 'none',
@@ -187,7 +187,7 @@ export default function DonationsPage() {
         fontWeight: '700',
         letterSpacing: '-0.02em',
         color: 'var(--color-ink)',
-        margin: '1.5rem 0 0.2rem',
+        margin: '1.5rem 0 0.35rem',
       }}>
         Donations
       </h1>

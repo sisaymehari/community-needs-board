@@ -159,8 +159,6 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
     setSubmitting(false)
   }
 
-  const pinColor = need.is_urgent ? 'var(--color-marigold)' : 'var(--color-green)'
-
   return (
     <div style={{
       position: 'relative',
@@ -170,17 +168,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
       background: '#fff',
     }}>
       {/* Corkboard pin */}
-      <span aria-hidden="true" style={{
-        position: 'absolute',
-        top: '-5px',
-        left: '20px',
-        width: '10px',
-        height: '10px',
-        borderRadius: '50%',
-        background: pinColor,
-        boxShadow: `0 2px 4px rgba(0,0,0,0.18), 0 0 0 2px var(--color-bg)`,
-        display: 'block',
-      }} />
+      <span aria-hidden="true" className={`pin-dot ${need.is_urgent ? 'pin-dot--marigold' : 'pin-dot--green'}`} />
 
       {/* Header row */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
@@ -231,6 +219,7 @@ export default function NeedCard({ need, onFulfilled }: { need: Need; onFulfille
         <div style={{ fontSize: '13px', color: 'var(--color-sage)' }}>
           <a
             href={`/org/${need.organisation_id}`}
+            className="text-link"
             style={{ color: 'var(--color-green)', textDecoration: 'none', fontWeight: '500' }}
           >
             {need.organisations?.name}

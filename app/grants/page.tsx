@@ -246,7 +246,7 @@ export default function GrantsPage() {
 
   return (
     <main className="page-wrap" style={{ maxWidth: '680px', margin: '0 auto' }}>
-      <a href="/" style={{
+      <a href="/" className="text-link" style={{
         fontSize: '13px',
         color: 'var(--color-sage)',
         textDecoration: 'none',
@@ -261,7 +261,7 @@ export default function GrantsPage() {
         fontWeight: '700',
         letterSpacing: '-0.02em',
         color: 'var(--color-ink)',
-        margin: '1.5rem 0 0.2rem',
+        margin: '1.5rem 0 0.35rem',
       }}>
         Grants
       </h1>
@@ -427,14 +427,33 @@ export default function GrantsPage() {
         <h2 style={monoLabel}>All Grants</h2>
 
         {grants.length === 0 ? (
-          <p style={{
-            color: 'var(--color-sage)',
-            fontSize: '14px',
-            fontFamily: 'var(--font-inter), system-ui, sans-serif',
-            padding: '1.5rem 0',
+          <div style={{
+            padding: '3rem 1.5rem',
+            border: '1px dashed var(--color-border)',
+            borderRadius: '10px',
+            textAlign: 'center',
           }}>
-            No grants tracked yet. Use the form above to add your first one.
-          </p>
+            <p style={{ fontSize: '2rem', marginBottom: '0.75rem', lineHeight: 1 }}>📋</p>
+            <p style={{
+              fontSize: '15px',
+              fontWeight: '600',
+              color: 'var(--color-ink)',
+              marginBottom: '0.5rem',
+              fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+            }}>
+              No grants tracked yet
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: 'var(--color-sage)',
+              lineHeight: '1.7',
+              maxWidth: '340px',
+              margin: '0 auto',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}>
+              Use the form above to log a funding opportunity and start tracking its deadline.
+            </p>
+          </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingTop: '8px' }}>
             {grants.map(grant => {
@@ -444,6 +463,13 @@ export default function GrantsPage() {
               const isUpcoming = days >= 0 && days <= 14 && grant.status !== 'awarded' && grant.status !== 'rejected'
               const flagBg = isOverdue ? 'var(--color-error-bg)' : 'var(--color-marigold-bg)'
               const flagBorder = isOverdue ? 'var(--color-error-border)' : 'var(--color-marigold)'
+              const pinClass = isOverdue
+                ? 'pin-dot--error'
+                : isUpcoming
+                  ? 'pin-dot--marigold'
+                  : grant.status === 'rejected'
+                    ? 'pin-dot--sage'
+                    : 'pin-dot--green'
 
               return (
                 <div key={grant.id} style={{
@@ -455,6 +481,8 @@ export default function GrantsPage() {
                   opacity: isPending ? 0.6 : 1,
                   transition: 'opacity 0.12s',
                 }}>
+                  <span aria-hidden="true" className={`pin-dot ${pinClass}`} />
+
                   {/* Header row */}
                   <div style={{
                     display: 'flex',
@@ -535,7 +563,8 @@ export default function GrantsPage() {
                         aria-label={`Update status for ${grant.grant_name}`}
                         style={{
                           width: 'auto',
-                          padding: '0.3rem 0.6rem',
+                          minHeight: '40px',
+                          padding: '0.45rem 0.75rem',
                           fontSize: '12.5px',
                         }}
                       >

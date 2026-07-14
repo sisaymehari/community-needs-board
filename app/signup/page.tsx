@@ -195,7 +195,7 @@ export default function SignupPage() {
           <p style={{ color: 'var(--color-sage)', fontSize: '14px', margin: 0, fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
             We sent a confirmation link to <strong style={{ color: 'var(--color-ink)' }}>{form.email}</strong>.
             Click it to activate your account, then come back and{' '}
-            <a href="/login" style={{ color: 'var(--color-green)', textDecoration: 'none' }}>log in</a>.
+            <a href="/login" className="text-link" style={{ color: 'var(--color-green)', textDecoration: 'none' }}>log in</a>.
           </p>
         </div>
       </main>
@@ -356,7 +356,7 @@ export default function SignupPage() {
 
           <p style={{ fontSize: '13.5px', color: 'var(--color-sage)', textAlign: 'center', margin: 0, fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
             Already have an account?{' '}
-            <a href="/login" style={{ color: 'var(--color-green)', textDecoration: 'none', fontWeight: '500' }}>
+            <a href="/login" className="text-link" style={{ color: 'var(--color-green)', textDecoration: 'none', fontWeight: '500' }}>
               Log in
             </a>
           </p>

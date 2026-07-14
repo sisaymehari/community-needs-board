@@ -24,7 +24,7 @@ export default async function OrgPage({
   ])
 
   const backLink = (
-    <a href="/" style={{
+    <a href="/" className="text-link" style={{
       fontSize: '13px',
       color: 'var(--color-sage)',
       textDecoration: 'none',
@@ -81,6 +81,7 @@ export default async function OrgPage({
           <span>{organisation.location}</span>
           <a
             href={`mailto:${organisation.email}`}
+            className="text-link"
             style={{ color: 'var(--color-green)', textDecoration: 'none' }}
           >
             {organisation.email}

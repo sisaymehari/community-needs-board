@@ -51,6 +51,7 @@ export default function RootLayout({
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <a
                 href="/"
+                className="text-link"
                 style={{
                   fontSize: '15px',
                   fontWeight: '700',
@@ -64,6 +65,7 @@ export default function RootLayout({
               </a>
               <a
                 href="/impact"
+                className="text-link"
                 style={{
                   fontSize: '13px',
                   color: 'var(--color-sage)',
@@ -75,6 +77,7 @@ export default function RootLayout({
               </a>
               <a
                 href="/events"
+                className="text-link"
                 style={{
                   fontSize: '13px',
                   color: 'var(--color-sage)',
@@ -86,6 +89,7 @@ export default function RootLayout({
               </a>
               <a
                 href="/matches"
+                className="text-link"
                 style={{
                   fontSize: '13px',
                   color: 'var(--color-sage)',

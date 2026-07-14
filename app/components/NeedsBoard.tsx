@@ -66,6 +66,7 @@ export default function NeedsBoard({ initialNeeds }: { initialNeeds: Need[] }) {
           </p>
           <a
             href="/post"
+            className="nav-cta"
             style={{
               display: 'inline-flex',
               alignItems: 'center',

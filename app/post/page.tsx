@@ -111,7 +111,7 @@ export default function PostNeedPage() {
       <main className="page-wrap" style={{ maxWidth: '600px', margin: '0 auto' }}>
         <p style={{ color: 'var(--color-sage)', fontSize: '14px', marginTop: '3rem', fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
           No organisation found for your account. If this is unexpected, please{' '}
-          <a href="/signup" style={{ color: 'var(--color-green)' }}>sign up again</a> or contact support.
+          <a href="/signup" className="text-link" style={{ color: 'var(--color-green)' }}>sign up again</a> or contact support.
         </p>
       </main>
     )
@@ -119,7 +119,7 @@ export default function PostNeedPage() {
 
   return (
     <main className="page-wrap" style={{ maxWidth: '560px', margin: '0 auto' }}>
-      <a href="/" style={{
+      <a href="/" className="text-link" style={{
         fontSize: '13px',
         color: 'var(--color-sage)',
         textDecoration: 'none',

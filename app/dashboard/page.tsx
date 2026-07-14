@@ -191,17 +191,7 @@ function DashNeedCard({
       background: '#fff',
     }}>
       {/* Pin */}
-      <span aria-hidden="true" style={{
-        position: 'absolute',
-        top: '-5px',
-        left: '20px',
-        width: '10px',
-        height: '10px',
-        borderRadius: '50%',
-        background: need.is_urgent ? 'var(--color-marigold)' : 'var(--color-green)',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.18), 0 0 0 2px var(--color-bg)',
-        display: 'block',
-      }} />
+      <span aria-hidden="true" className={`pin-dot ${need.is_urgent ? 'pin-dot--marigold' : 'pin-dot--green'}`} />
 
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.6rem' }}>
@@ -463,7 +453,7 @@ export default function DashboardPage() {
           <h2 style={sectionHeading}>
             Open Needs{openNeeds.length > 0 ? ` (${openNeeds.length})` : ''}
           </h2>
-          <a href="/post" style={{
+          <a href="/post" className="text-link" style={{
             fontSize: '13px',
             color: 'var(--color-green)',
             textDecoration: 'none',
@@ -489,7 +479,7 @@ export default function DashboardPage() {
             }}>
               No open needs right now.
             </p>
-            <a href="/post" style={{
+            <a href="/post" className="nav-cta" style={{
               display: 'inline-flex',
               alignItems: 'center',
               background: 'var(--color-green)',
@@ -517,7 +507,7 @@ export default function DashboardPage() {
       <section style={{ marginBottom: '3rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
           <h2 style={sectionHeading}>Recent Donations</h2>
-          <a href="/donations" style={{
+          <a href="/donations" className="text-link" style={{
             fontSize: '13px',
             color: 'var(--color-green)',
             textDecoration: 'none',
@@ -535,7 +525,7 @@ export default function DashboardPage() {
             fontFamily: 'var(--font-inter), system-ui, sans-serif',
           }}>
             No donations logged yet.{' '}
-            <a href="/donations" style={{ color: 'var(--color-green)', textDecoration: 'none' }}>
+            <a href="/donations" className="text-link" style={{ color: 'var(--color-green)', textDecoration: 'none' }}>
               Start tracking →
             </a>
           </p>
@@ -586,7 +576,11 @@ export default function DashboardPage() {
                     fontSize: '12.5px',
                     color: 'var(--color-sage)',
                     fontFamily: 'var(--font-inter), system-ui, sans-serif',
-                    flexShrink: 0,
+                    flexShrink: 1,
+                    minWidth: 0,
+                    maxWidth: '140px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                   }}>
                     {d.donor_name}

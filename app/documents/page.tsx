@@ -204,7 +204,7 @@ export default function DocumentsPage() {
 
   return (
     <main className="page-wrap" style={{ maxWidth: '680px', margin: '0 auto' }}>
-      <a href="/" style={{
+      <a href="/" className="text-link" style={{
         fontSize: '13px',
         color: 'var(--color-sage)',
         textDecoration: 'none',
@@ -219,7 +219,7 @@ export default function DocumentsPage() {
         fontWeight: '700',
         letterSpacing: '-0.02em',
         color: 'var(--color-ink)',
-        margin: '1.5rem 0 0.2rem',
+        margin: '1.5rem 0 0.35rem',
       }}>
         Documents
       </h1>
@@ -314,20 +314,40 @@ export default function DocumentsPage() {
         )}
 
         {documents.length === 0 ? (
-          <p style={{
-            color: 'var(--color-sage)',
-            fontSize: '14px',
-            fontFamily: 'var(--font-inter), system-ui, sans-serif',
-            padding: '1.5rem 0',
+          <div style={{
+            padding: '3rem 1.5rem',
+            border: '1px dashed var(--color-border)',
+            borderRadius: '10px',
+            textAlign: 'center',
           }}>
-            No documents uploaded yet. Use the form above to add your first one.
-          </p>
+            <p style={{ fontSize: '2rem', marginBottom: '0.75rem', lineHeight: 1 }}>🗂️</p>
+            <p style={{
+              fontSize: '15px',
+              fontWeight: '600',
+              color: 'var(--color-ink)',
+              marginBottom: '0.5rem',
+              fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+            }}>
+              No documents uploaded yet
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: 'var(--color-sage)',
+              lineHeight: '1.7',
+              maxWidth: '340px',
+              margin: '0 auto',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}>
+              Use the form above to store DBS checks, insurance certificates, and policies securely.
+            </p>
+          </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingTop: '8px' }}>
             {documents.map(doc => {
               const isPending = pendingIds.has(doc.id)
               return (
                 <div key={doc.id} style={{
+                  position: 'relative',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '1rem',
@@ -338,6 +358,8 @@ export default function DocumentsPage() {
                   opacity: isPending ? 0.6 : 1,
                   transition: 'opacity 0.12s',
                 }}>
+                  <span aria-hidden="true" className="pin-dot pin-dot--green" />
+
                   <div style={{ minWidth: 0, flex: 1 }}>
                     <div style={{
                       fontSize: '14.5px',

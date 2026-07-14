@@ -277,7 +277,7 @@ export default function InventoryPage() {
 
   return (
     <main className="page-wrap" style={{ maxWidth: '680px', margin: '0 auto' }}>
-      <a href="/" style={{
+      <a href="/" className="text-link" style={{
         fontSize: '13px',
         color: 'var(--color-sage)',
         textDecoration: 'none',
@@ -292,7 +292,7 @@ export default function InventoryPage() {
         fontWeight: '700',
         letterSpacing: '-0.02em',
         color: 'var(--color-ink)',
-        margin: '1.5rem 0 0.2rem',
+        margin: '1.5rem 0 0.35rem',
       }}>
         Inventory
       </h1>
@@ -407,6 +407,7 @@ export default function InventoryPage() {
               display: 'flex',
               alignItems: 'center',
               gap: '0.6rem',
+              padding: '0.5rem 0',
               fontSize: '13.5px',
               color: 'var(--color-ink)',
               fontFamily: 'var(--font-inter), system-ui, sans-serif',
@@ -417,7 +418,7 @@ export default function InventoryPage() {
                 name="available_to_share"
                 checked={form.available_to_share}
                 onChange={handleCheckboxChange}
-                style={{ width: '16px', height: '16px', accentColor: 'var(--color-green)' }}
+                style={{ width: '16px', height: '16px', accentColor: 'var(--color-green)', flexShrink: 0 }}
               />
               Available to share with other charities
             </label>
@@ -451,7 +452,7 @@ export default function InventoryPage() {
           <strong style={{ color: 'var(--color-green)' }}>Someone could use what you have to share:</strong>{' '}
           {Array.from(new Set(matchingNeeds.map(n => n.organisations?.name).filter(Boolean))).join(', ')}{' '}
           {matchingNeeds.length === 1 ? 'has' : 'have'} an open need matching a category you marked as shareable.{' '}
-          <a href="/matches" style={{ color: 'var(--color-green)', fontWeight: 600, textDecoration: 'none' }}>
+          <a href="/matches" className="text-link" style={{ color: 'var(--color-green)', fontWeight: 600, textDecoration: 'none' }}>
             See matches →
           </a>
         </div>
@@ -462,14 +463,33 @@ export default function InventoryPage() {
         <h2 style={monoLabel}>Current Stock</h2>
 
         {items.length === 0 ? (
-          <p style={{
-            color: 'var(--color-sage)',
-            fontSize: '14px',
-            fontFamily: 'var(--font-inter), system-ui, sans-serif',
-            padding: '1.5rem 0',
+          <div style={{
+            padding: '3rem 1.5rem',
+            border: '1px dashed var(--color-border)',
+            borderRadius: '10px',
+            textAlign: 'center',
           }}>
-            No items in stock yet. Use the form above to add your first one.
-          </p>
+            <p style={{ fontSize: '2rem', marginBottom: '0.75rem', lineHeight: 1 }}>📦</p>
+            <p style={{
+              fontSize: '15px',
+              fontWeight: '600',
+              color: 'var(--color-ink)',
+              marginBottom: '0.5rem',
+              fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+            }}>
+              No items in stock yet
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: 'var(--color-sage)',
+              lineHeight: '1.7',
+              maxWidth: '340px',
+              margin: '0 auto',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}>
+              Use the form above to log what you have on hand.
+            </p>
+          </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {groupedItems.map(group => (
@@ -492,6 +512,7 @@ export default function InventoryPage() {
                     const isPending = pendingIds.has(item.id)
                     return (
                       <div key={item.id} style={{
+                        position: 'relative',
                         border: '1px solid var(--color-border)',
                         borderRadius: '10px',
                         padding: '1rem 1.25rem',
@@ -503,6 +524,8 @@ export default function InventoryPage() {
                         opacity: isPending ? 0.6 : 1,
                         transition: 'opacity 0.12s',
                       }}>
+                        <span aria-hidden="true" className={`pin-dot ${item.available_to_share ? 'pin-dot--green' : 'pin-dot--sage'}`} />
+
                         <div style={{ minWidth: 0, flex: 1 }}>
                           <div style={{
                             fontSize: '14.5px',
@@ -528,8 +551,9 @@ export default function InventoryPage() {
                           <label style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '5px',
+                            gap: '6px',
                             marginTop: '5px',
+                            padding: '0.4rem 0',
                             fontSize: '12px',
                             color: item.available_to_share ? 'var(--color-green)' : 'var(--color-sage)',
                             fontFamily: 'var(--font-inter), system-ui, sans-serif',
@@ -541,7 +565,7 @@ export default function InventoryPage() {
                               checked={item.available_to_share}
                               disabled={isPending}
                               onChange={() => toggleShare(item)}
-                              style={{ width: '13px', height: '13px', accentColor: 'var(--color-green)' }}
+                              style={{ width: '14px', height: '14px', accentColor: 'var(--color-green)', flexShrink: 0 }}
                             />
                             Available to share
                           </label>
@@ -554,7 +578,7 @@ export default function InventoryPage() {
                             onClick={() => adjustQuantity(item, -1)}
                             disabled={isPending || item.quantity <= 0}
                             aria-label={`Decrease quantity of ${item.item_name}`}
-                            style={{ padding: '4px 10px', fontWeight: 600 }}
+                            style={{ fontWeight: 600 }}
                           >
                             −
                           </button>
@@ -573,6 +597,7 @@ export default function InventoryPage() {
                             aria-label={`Quantity of ${item.item_name}`}
                             style={{
                               width: '52px',
+                              minHeight: '40px',
                               textAlign: 'center',
                               padding: '0.35rem 0.3rem',
                               border: '1px solid var(--color-border)',
@@ -589,7 +614,7 @@ export default function InventoryPage() {
                             onClick={() => adjustQuantity(item, 1)}
                             disabled={isPending}
                             aria-label={`Increase quantity of ${item.item_name}`}
-                            style={{ padding: '4px 10px', fontWeight: 600 }}
+                            style={{ fontWeight: 600 }}
                           >
                             +
                           </button>

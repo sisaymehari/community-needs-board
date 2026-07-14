@@ -75,7 +75,7 @@ export default function MyOffersPage() {
 
   return (
     <main className="page-wrap" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <a href="/" style={{
+      <a href="/" className="text-link" style={{
         fontSize: '13px',
         color: 'var(--color-sage)',
         textDecoration: 'none',
@@ -130,6 +130,7 @@ export default function MyOffersPage() {
           </p>
           <a
             href="/"
+            className="nav-cta"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -212,6 +213,7 @@ export default function MyOffersPage() {
                   <div style={{ fontSize: '13px', marginBottom: offer.message ? '0.75rem' : 0 }}>
                     <a
                       href={`/org/${need.organisation_id}`}
+                      className="text-link"
                       style={{ color: 'var(--color-green)', textDecoration: 'none', fontWeight: '500' }}
                     >
                       {need.organisations.name}

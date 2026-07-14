@@ -214,7 +214,7 @@ export default function BusinessOffersPage() {
 
   return (
     <main className="page-wrap" style={{ maxWidth: '680px', margin: '0 auto' }}>
-      <a href="/" style={{
+      <a href="/" className="text-link" style={{
         fontSize: '13px',
         color: 'var(--color-sage)',
         textDecoration: 'none',
@@ -229,7 +229,7 @@ export default function BusinessOffersPage() {
         fontWeight: '700',
         letterSpacing: '-0.02em',
         color: 'var(--color-ink)',
-        margin: '1.5rem 0 0.2rem',
+        margin: '1.5rem 0 0.35rem',
       }}>
         Business Offers
       </h1>
@@ -323,6 +323,7 @@ export default function BusinessOffersPage() {
               display: 'flex',
               alignItems: 'center',
               gap: '0.6rem',
+              padding: '0.5rem 0',
               fontSize: '13.5px',
               color: 'var(--color-ink)',
               fontFamily: 'var(--font-inter), system-ui, sans-serif',
@@ -332,7 +333,7 @@ export default function BusinessOffersPage() {
                 type="checkbox"
                 checked={form.available}
                 onChange={handleAvailableChange}
-                style={{ width: '16px', height: '16px', accentColor: 'var(--color-green)' }}
+                style={{ width: '16px', height: '16px', accentColor: 'var(--color-green)', flexShrink: 0 }}
               />
               Currently available
             </label>
@@ -356,14 +357,33 @@ export default function BusinessOffersPage() {
         <h2 style={monoLabel}>Your Offers</h2>
 
         {offers.length === 0 ? (
-          <p style={{
-            color: 'var(--color-sage)',
-            fontSize: '14px',
-            fontFamily: 'var(--font-inter), system-ui, sans-serif',
-            padding: '1.5rem 0',
+          <div style={{
+            padding: '3rem 1.5rem',
+            border: '1px dashed var(--color-border)',
+            borderRadius: '10px',
+            textAlign: 'center',
           }}>
-            No offers posted yet. Use the form above to add your first one.
-          </p>
+            <p style={{ fontSize: '2rem', marginBottom: '0.75rem', lineHeight: 1 }}>🎁</p>
+            <p style={{
+              fontSize: '15px',
+              fontWeight: '600',
+              color: 'var(--color-ink)',
+              marginBottom: '0.5rem',
+              fontFamily: 'var(--font-space-grotesk), system-ui, sans-serif',
+            }}>
+              No offers posted yet
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: 'var(--color-sage)',
+              lineHeight: '1.7',
+              maxWidth: '340px',
+              margin: '0 auto',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            }}>
+              Use the form above to let local charities know what surplus stock you can share.
+            </p>
+          </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {groupedOffers.map(group => (
@@ -386,6 +406,7 @@ export default function BusinessOffersPage() {
                     const isPending = pendingIds.has(offer.id)
                     return (
                       <div key={offer.id} style={{
+                        position: 'relative',
                         border: '1px solid var(--color-border)',
                         borderRadius: '10px',
                         padding: '1rem 1.25rem',
@@ -397,6 +418,8 @@ export default function BusinessOffersPage() {
                         opacity: isPending ? 0.6 : 1,
                         transition: 'opacity 0.12s',
                       }}>
+                        <span aria-hidden="true" className={`pin-dot ${offer.available ? 'pin-dot--green' : 'pin-dot--sage'}`} />
+
                         <div style={{ minWidth: 0, flex: 1 }}>
                           <div style={{
                             fontSize: '14.5px',
@@ -416,7 +439,8 @@ export default function BusinessOffersPage() {
                           <label style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '5px',
+                            gap: '6px',
+                            padding: '0.4rem 0',
                             fontSize: '12px',
                             color: offer.available ? 'var(--color-green)' : 'var(--color-sage)',
                             fontFamily: 'var(--font-inter), system-ui, sans-serif',
@@ -427,7 +451,7 @@ export default function BusinessOffersPage() {
                               checked={offer.available}
                               disabled={isPending}
                               onChange={() => toggleAvailable(offer)}
-                              style={{ width: '13px', height: '13px', accentColor: 'var(--color-green)' }}
+                              style={{ width: '14px', height: '14px', accentColor: 'var(--color-green)', flexShrink: 0 }}
                             />
                             Available
                           </label>
